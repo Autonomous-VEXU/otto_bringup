@@ -4,6 +4,7 @@ import launch
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
@@ -11,8 +12,14 @@ def generate_launch_description():
     default_model_path = PathJoinSubstitution([
         FindPackageShare('vex_robot'),
         'urdf',
-        'x_drive_desc.urdf.xacro'
+        'x_drive.urdf.xacro'
     ])
+
+    model = DeclareLaunchArgument(
+            name='model',
+            default_value=default_model_path,
+            description='path to robot model'
+        )
     
     # Rviz configuration file 
     rviz_config = os.path.join(
@@ -42,15 +49,14 @@ def generate_launch_description():
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
-        output="screen"
+        output="screen",
+        parameters=[{
+            'robot_description': Command(['xacro ', LaunchConfiguration('model')])
+        }]
     )
     
     return launch.LaunchDescription([
-        launch.actions.DeclareLaunchArgument(
-            name='model',
-            default_value=default_model_path,
-            description='path to robot model'
-        ),
+        model,
         joints,
         robot_state,
         rviz
