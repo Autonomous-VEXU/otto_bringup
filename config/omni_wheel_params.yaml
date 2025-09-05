@@ -1,0 +1,26 @@
+omni_wheel_params:
+  ros__parameters:
+    wheel_offset: 0.0
+    wheel_names:
+      [
+        "wheel_a",
+        "wheel_b",
+        "wheel_c",
+        "wheel_d",
+      ]
+
+    robot_radius: 0.20
+    wheel_radius: 0.00275
+
+    odom_frame_id: odom
+    base_frame_id: base_link
+    pose_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    twist_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    open_loop: true
+    position_feedback: false
+    enable_odom_tf: true
+
+    cmd_vel_timeout: 0.5
+    publish_limited_velocity: true
+
