@@ -1,15 +1,18 @@
 <?xml version='1.0'?>
 <robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+	<!-- Xacro Properties-->
 	<xacro:property name="stl_path" value="package://vex_robot/models"/>
-	<xacro:property name='pi' value='3.14159'/>
 	<xacro:property name="pi_4" value="0.7854"/>
 	<xacro:property name="pi_2" value="1.5708"/>
+	<xacro:property name="wheel_rot" value="${2.35*pi_2}"/>
 	<xacro:property name="wheel_offs" value="0.14"/>
 	<xacro:property name="wheel_rad" value="0.01375"/>
 	
+	<!-- Stand in link for the world-->
 	<link name='world'/>
-	
+
+	<!--Chassis link-->
 	<link name="chassis">
 		<visual>
 			<geometry>
@@ -77,13 +80,13 @@
     </joint>
 
 	<joint name="chassis_to_wheel_c" type="continuous">
-        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 2.35*${pi_2}"/>
+        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${wheel_rot}"/>
         <parent link="chassis"/>
         <child link="wheel_c"/>
     </joint>
 
 	<joint name="chassis_to_wheel_d" type="continuous">
-        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 2.35*${pi_2}"/>
+        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${wheel_rot}"/>
         <parent link="chassis"/>
         <child link="wheel_d"/>
     </joint>
