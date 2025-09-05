@@ -1,0 +1,10 @@
+<!-- ROS2_control model-->
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="vex_ros2_control" params="name prefix">
+  
+  
+
+
+</robot>

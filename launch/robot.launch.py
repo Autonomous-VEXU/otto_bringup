@@ -11,7 +11,7 @@ def generate_launch_description():
     default_model_path = PathJoinSubstitution([
         FindPackageShare('vex_robot'),
         'urdf',
-        'x-drive.urdf.xacro'
+        'x_drive_desc.urdf.xacro'
     ])
     
     # Rviz configuration file 
