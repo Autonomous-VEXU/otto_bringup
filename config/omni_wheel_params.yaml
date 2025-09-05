@@ -1,12 +1,22 @@
-omni_wheel_params:
+controller_manager:
+  ros__parameters:
+    update_rate: 100 
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    omni_wheel_drive_controller:
+      type: omni_wheel_drive_controller/OmniWheelDriveController
+
+omni_wheel_drive_controller:
   ros__parameters:
     wheel_offset: 0.0
     wheel_names:
       [
-        "wheel_a",
-        "wheel_b",
-        "wheel_c",
-        "wheel_d",
+        "chassis_to_wheel_a",
+        "chassis_to_wheel_b",
+        "chassis_to_wheel_c",
+        "chassis_to_wheel_d",
       ]
 
     robot_radius: 0.20
