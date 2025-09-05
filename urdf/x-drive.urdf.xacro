@@ -5,7 +5,7 @@
 	<xacro:property name="stl_path" value="package://vex_robot/models"/>
 	<xacro:property name="pi_4" value="0.7854"/>
 	<xacro:property name="pi_2" value="1.5708"/>
-	<xacro:property name="wheel_rot" value="${2.35*pi_2}"/>
+	<xacro:property name="wheel_rot" value="3.69138"/>
 	<xacro:property name="wheel_offs" value="0.14"/>
 	<xacro:property name="wheel_rad" value="0.01375"/>
 	
@@ -80,13 +80,13 @@
     </joint>
 
 	<joint name="chassis_to_wheel_c" type="continuous">
-        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${wheel_rot}"/>
+        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
         <parent link="chassis"/>
         <child link="wheel_c"/>
     </joint>
 
 	<joint name="chassis_to_wheel_d" type="continuous">
-        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${wheel_rot}"/>
+        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
         <parent link="chassis"/>
         <child link="wheel_d"/>
     </joint>
