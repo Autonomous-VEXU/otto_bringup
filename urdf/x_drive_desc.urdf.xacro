@@ -29,9 +29,15 @@
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0"/>
             <inertia
-                ixx="0" ixy="0" ixz="0"
-                iyy="0" iyz="0"
-                izz="0"/>
+                ixx="144.802"
+				ixy="0" 
+				ixz="0"
+				iyx="0"
+                iyy="144.802" 
+				iyz="0"
+				izx="0"
+				izy="0"
+                izz="288.141"/>
         </inertial>
 	</link>
 
@@ -52,6 +58,21 @@
 					<mesh filename='package://vex_robot/models/wheel.stl'/>
 				</geometry>
 			</collision>
+
+			<inertial>
+            	<origin xyz="0 0 0" rpy="0 0 0"/>
+            	<mass value="0"/>
+				<inertia
+					ixx="0.055"
+					ixy="0" 
+					ixz="0"
+					iyx="0"
+					iyy="0.0988" 
+					iyz="0"
+					izx="0"
+					izy="0"
+					izz="0.055"/>
+        	</inertial>
 		</link>
 	</xacro:macro>
 
@@ -67,7 +88,7 @@
 		<child link='chassis'/>
 	</joint>
 
-	<joint name="to_wheel_a" type="continuous">
+	<joint name="chassis_to_wheel_a" type="continuous">
         <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi_4}"/>
         <parent link="chassis"/>
         <child link="wheel_a"/>
