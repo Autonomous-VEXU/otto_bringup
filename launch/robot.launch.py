@@ -53,7 +53,7 @@ def generate_launch_description():
         arguments=["omni_wheel_drive_controller", "--controller-manager", "/controller_manager"],
     )
 
-    delay_omni_controller_spawner_after_joint_state_broadcaster = RegisterEventHandler(
+    delay_omni_controller = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
             on_exit=[omni_controller_spawner],
@@ -64,7 +64,7 @@ def generate_launch_description():
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
-        delay_omni_controller_spawner_after_joint_state_broadcaster,
+        delay_omni_controller,
     ]
 
     return LaunchDescription(nodes)

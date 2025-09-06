@@ -144,7 +144,7 @@
 	</ros2_control>
 
 	<gazebo>
-  		<plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+  		<plugin filename="ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
     		<parameters>package://vex_robot/config/omni_wheel_params.yaml</parameters>
 			<controller_manager_prefix_node_name>controller_manager</controller_manager_prefix_node_name>
   		</plugin>
