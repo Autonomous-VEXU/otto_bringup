@@ -50,6 +50,7 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
-# VSCode
+# VSCode auto generated crap
 vex_robot.code-workspace
-.vscode/*
+/.vscode
+/log
