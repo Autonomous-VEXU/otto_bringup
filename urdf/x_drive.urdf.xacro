@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-	<!-- Xacro Properties-->
+	<!-- properties-->
 	<xacro:property name="stl_path" value="package://vex_robot/models"/>
 	<xacro:property name="pi_4" value="0.7854"/>
 	<xacro:property name="pi_2" value="1.5708"/>
@@ -9,10 +9,10 @@
 	<xacro:property name="wheel_offs" value="0.14"/>
 	<xacro:property name="wheel_rad" value="0.01375"/>
 	
-	<!-- Stand in link for the world-->
+	<!--world link-->
 	<link name='base_footprint'/>
 
-	<!--Chassis link-->
+	<!--chassis link-->
 	<link name="base_link">
 		<visual>
 			<geometry>
@@ -44,7 +44,7 @@
         </inertial>
 	</link>
 
-	<!-- Wheels -->
+	<!-- wheels -->
 	<xacro:macro name="wheel_link" params="name">
 		<link name="${name}">
 			<visual>
@@ -84,7 +84,7 @@
 	<xacro:wheel_link name="wheel_c"/>
 	<xacro:wheel_link name="wheel_d"/>
 
-	<!-- Joints-->
+	<!-- joints-->
 	<joint name="world_2_chassis" type='fixed'>
 		<origin xyz="0 0 0.025" rpy="0 0 0"/>
 		<parent link='base_footprint'/>
