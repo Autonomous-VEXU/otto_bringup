@@ -59,11 +59,9 @@ def generate_launch_description():
         )
     )
 
-    nodes = [
+    return LaunchDescription([
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delay_omni_controller,
-    ]
-
-    return LaunchDescription(nodes)
+    ])
