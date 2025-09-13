@@ -37,7 +37,7 @@
 				iyy="0.01"
 				iyz="0.0"
 				izz="0.01"/>
-    </inertia>
+    		</inertial>
 	</link>
 
 	<!-- wheels -->

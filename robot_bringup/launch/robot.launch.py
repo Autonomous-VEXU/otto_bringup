@@ -13,7 +13,8 @@ def generate_launch_description():
         " ",
         PathJoinSubstitution([
             FindPackageShare("robot_description"),
-            "urdf",
+            "models",
+            "x_drive",
             "x_drive.urdf.xacro"
         ])
     ])
