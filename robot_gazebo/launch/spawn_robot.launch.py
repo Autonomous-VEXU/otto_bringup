@@ -6,6 +6,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+import xacro
+
 
 
 def generate_launch_description():
@@ -13,10 +15,23 @@ def generate_launch_description():
 
     urdf_path = os.path.join(
         get_package_share_directory('robot_description'),
-        'models',
-        'x_drive.urdf'
+        'urdf',
+        'x_drive.urdf.xacro'
     )
 
+    urdf = xacro.process_file(urdf_path).toxml()
+    
+    robot_state_publisher_node = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        parameters=[{
+            'robot_description': urdf
+        }]
+    )
+
+
+
+    
     # Launch configuration variables specific to simulation
     x_pose = LaunchConfiguration('x_pose', default='0.0')
     y_pose = LaunchConfiguration('y_pose', default='0.0')
@@ -35,7 +50,7 @@ def generate_launch_description():
         executable='create',
         arguments=[
             '-name', 'vex_robot',
-            '-file', urdf_path,
+            '-topic', '/robot_description',
             '-x', x_pose,
             '-y', y_pose,
             '-z', '0.01'
@@ -66,7 +81,10 @@ def generate_launch_description():
         arguments=['/camera/image_raw'],
         output='screen',
     )
-    ld = LaunchDescription()
+    
+    ld = LaunchDescription([
+        robot_state_publisher_node,
+    ])
 
     # Declare the launch options
     ld.add_action(declare_x_position_cmd)
