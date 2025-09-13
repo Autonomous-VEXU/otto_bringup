@@ -12,9 +12,9 @@ def generate_launch_description():
     # Get the urdf file
 
     urdf_path = os.path.join(
-        get_package_share_directory('robot_gazebo'),
+        get_package_share_directory('robot_description'),
         'models',
-        'x_drive.sdf'
+        'x_drive.urdf'
     )
 
     # Launch configuration variables specific to simulation
@@ -46,7 +46,7 @@ def generate_launch_description():
     bridge_params = os.path.join(
         get_package_share_directory('robot_gazebo'),
         'config',
-        'bridge.yaml'
+        'x_drive_bridge.yaml'
     )
 
     start_gazebo_ros_bridge_cmd = Node(

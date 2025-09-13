@@ -11,13 +11,13 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    urdf_file_name = 'x_drive.urdf'
+    urdf_file_name = 'x_drive.urdf.xacro'
     frame_prefix = LaunchConfiguration('frame_prefix', default='')
 
     print('urdf_file_name : {}'.format(urdf_file_name))
 
     urdf_path = os.path.join(
-        get_package_share_directory('robot_gazebo'),
+        get_package_share_directory('robot_description'),
         'urdf',
         urdf_file_name)
 

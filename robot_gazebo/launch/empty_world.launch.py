@@ -18,9 +18,9 @@ def generate_launch_description():
     y_pose = LaunchConfiguration('y_pose', default='0.0')
 
     world = os.path.join(
-        get_package_share_directory('pushback_sim'),
+        get_package_share_directory('turtlebot3_gazebo'), # remember to change this later!
         'worlds',
-        'empty_world.world'
+        'empty_world.sdf'
     )
 
     gzserver_cmd = IncludeLaunchDescription(
@@ -39,7 +39,7 @@ def generate_launch_description():
 
     robot_state_publisher_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(launch_file_dir, 'robot_state_publisher.launch.py')
+            os.path.join(launch_file_dir, 'state_publisher.launch.py')
         ),
         launch_arguments={'use_sim_time': use_sim_time}.items()
     )
@@ -57,7 +57,7 @@ def generate_launch_description():
     set_env_vars_resources = AppendEnvironmentVariable(
             'GZ_SIM_RESOURCE_PATH',
             os.path.join(
-                get_package_share_directory('robot_gazebo'),
+                get_package_share_directory('robot_description'),
                 'models'))
 
     ld = LaunchDescription()
