@@ -12,7 +12,7 @@ def generate_launch_description():
         PathJoinSubstitution([FindExecutable(name="xacro")]),
         " ",
         PathJoinSubstitution([
-            FindPackageShare("vex_robot"),
+            FindPackageShare("robot_description"),
             "urdf",
             "x_drive.urdf.xacro"
         ])
@@ -21,7 +21,7 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     controller_config = PathJoinSubstitution([
-        FindPackageShare("vex_robot"),
+        FindPackageShare("robot_bringup"),
         "config",
         "omni_wheel_params.yaml"
     ])
