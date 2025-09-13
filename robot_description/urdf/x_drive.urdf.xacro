@@ -2,7 +2,7 @@
 <robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<!-- properties-->
-	<xacro:property name="stl_path" value="package://vex_robot/models"/>
+	<xacro:property name="stl_path" value="package://robot_description/models"/>
 	<xacro:property name="pi_4" value="0.7854"/>
 	<xacro:property name="pi_2" value="1.5708"/>
 	<xacro:property name="wheel_rot" value="3.69138"/>
@@ -10,7 +10,7 @@
 	<xacro:property name="wheel_rad" value="0.01375"/>
 	
 	<!--world link-->
-	<link name='base_footprint'/>
+	<link name='world'/>
 
 	<!--chassis link-->
 	<link name="base_link">
@@ -22,7 +22,7 @@
 
 		<collision>
 			<geometry>
-				<mesh filename='package://vex_robot/models/chassis.dae'/>
+				<mesh filename='package://robot_description/models/chassis.dae'/>
 			</geometry>
 			<material name="pink">
 				<color rgba="237 72 154 1.0"/> 
@@ -49,7 +49,7 @@
 		<link name="${name}">
 			<visual>
 				<geometry>
-					<mesh filename='package://vex_robot/models/wheel.stl'/>
+					<mesh filename='package://robot_description/models/wheel.stl'/>
 				</geometry>
 				<material name="dark_grey">
 					<color rgba="0.2 0.2 0.2 1.0"/>
@@ -58,7 +58,7 @@
 
 			<collision>
 				<geometry>
-					<mesh filename='package://vex_robot/models/wheel.stl'/>
+					<mesh filename='package://robot_description/models/wheel.stl'/>
 				</geometry>
 			</collision>
 
@@ -87,7 +87,7 @@
 	<!-- joints-->
 	<joint name="world_2_chassis" type='fixed'>
 		<origin xyz="0 0 0.025" rpy="0 0 0"/>
-		<parent link='base_footprint'/>
+		<parent link='world'/>
 		<child link='base_link'/>
 	</joint>
 
