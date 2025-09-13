@@ -2,7 +2,6 @@
 <robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<!-- properties-->
-	<xacro:property name="stl_path" value="package://robot_description/models"/>
 	<xacro:property name="pi_4" value="0.7854"/>
 	<xacro:property name="pi_2" value="1.5708"/>
 	<xacro:property name="wheel_rot" value="3.69138"/>
@@ -16,13 +15,13 @@
 	<link name="base_link">
 		<visual>
 			<geometry>
-				<mesh filename='${stl_path}/chassis.dae'/>
+				<mesh filename='package://robot_description/models/x_drive/meshes/chassis.dae'/>
 			</geometry>
 		</visual>
 
 		<collision>
 			<geometry>
-				<mesh filename='package://robot_description/models/chassis.dae'/>
+				<mesh filename='package://robot_description/models/x_drive/meshes/chassis.dae'/>
 			</geometry>
 			<material name="pink">
 				<color rgba="237 72 154 1.0"/> 
@@ -31,17 +30,14 @@
 		<inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="8.789"/>
-            <inertia
-                ixx="144.802"
-				ixy="0" 
-				ixz="0"
-				iyx="0"
-                iyy="144.802"
-				iyz="0"
-				izx="0"
-				izy="0"
-                izz="288.141"/>
-        </inertial>
+           <inertia
+      			ixx="0.01"
+				ixy="0.0"
+				ixz="0.0"
+				iyy="0.01"
+				iyz="0.0"
+				izz="0.01"/>
+    </inertia>
 	</link>
 
 	<!-- wheels -->
@@ -49,7 +45,7 @@
 		<link name="${name}">
 			<visual>
 				<geometry>
-					<mesh filename='package://robot_description/models/wheel.stl'/>
+					<mesh filename='package://robot_description/models/x_drive/meshes/wheel.dae'/>
 				</geometry>
 				<material name="dark_grey">
 					<color rgba="0.2 0.2 0.2 1.0"/>
@@ -58,7 +54,7 @@
 
 			<collision>
 				<geometry>
-					<mesh filename='package://robot_description/models/wheel.stl'/>
+					<mesh filename='package://robot_description/models/x_drive/meshes/wheel.dae'/>
 				</geometry>
 			</collision>
 
@@ -66,15 +62,12 @@
             	<origin xyz="0 0 0" rpy="0 0 0"/>
             	<mass value="0.076"/>
 				<inertia
-					ixx="0.055"
-					ixy="0" 
-					ixz="0"
-					iyx="0"
-					iyy="0.0988" 
-					iyz="0"
-					izx="0"
-					izy="0"
-					izz="0.055"/>
+      			ixx="0.01"
+				ixy="0.0"
+				ixz="0.0"
+				iyy="0.01"
+				iyz="0.0"
+				izz="0.01"/>
         	</inertial>
 		</link>
 	</xacro:macro>
