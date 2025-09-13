@@ -1,0 +1,152 @@
+<?xml version='1.0'?>
+<robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<!-- properties-->
+	<xacro:property name="stl_path" value="package://robot_description/models"/>
+	<xacro:property name="pi_4" value="0.7854"/>
+	<xacro:property name="pi_2" value="1.5708"/>
+	<xacro:property name="wheel_rot" value="3.69138"/>
+	<xacro:property name="wheel_offs" value="0.14"/>
+	<xacro:property name="wheel_rad" value="0.01375"/>
+	
+	<!--world link-->
+	<link name='world'/>
+
+	<!--chassis link-->
+	<link name="base_link">
+		<visual>
+			<geometry>
+				<mesh filename='${stl_path}/chassis.dae'/>
+			</geometry>
+		</visual>
+
+		<collision>
+			<geometry>
+				<mesh filename='package://robot_description/models/chassis.dae'/>
+			</geometry>
+			<material name="pink">
+				<color rgba="237 72 154 1.0"/> 
+			</material>
+		</collision>
+		<inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="8.789"/>
+            <inertia
+                ixx="144.802"
+				ixy="0" 
+				ixz="0"
+				iyx="0"
+                iyy="144.802"
+				iyz="0"
+				izx="0"
+				izy="0"
+                izz="288.141"/>
+        </inertial>
+	</link>
+
+	<!-- wheels -->
+	<xacro:macro name="wheel_link" params="name">
+		<link name="${name}">
+			<visual>
+				<geometry>
+					<mesh filename='package://robot_description/models/wheel.stl'/>
+				</geometry>
+				<material name="dark_grey">
+					<color rgba="0.2 0.2 0.2 1.0"/>
+				</material>
+			</visual>
+
+			<collision>
+				<geometry>
+					<mesh filename='package://robot_description/models/wheel.stl'/>
+				</geometry>
+			</collision>
+
+			<inertial>
+            	<origin xyz="0 0 0" rpy="0 0 0"/>
+            	<mass value="0.076"/>
+				<inertia
+					ixx="0.055"
+					ixy="0" 
+					ixz="0"
+					iyx="0"
+					iyy="0.0988" 
+					iyz="0"
+					izx="0"
+					izy="0"
+					izz="0.055"/>
+        	</inertial>
+		</link>
+	</xacro:macro>
+
+	<xacro:wheel_link name="wheel_a"/>
+	<xacro:wheel_link name="wheel_b"/>
+	<xacro:wheel_link name="wheel_c"/>
+	<xacro:wheel_link name="wheel_d"/>
+
+	<!-- joints-->
+	<joint name="world_2_chassis" type='fixed'>
+		<origin xyz="0 0 0.025" rpy="0 0 0"/>
+		<parent link='world'/>
+		<child link='base_link'/>
+	</joint>
+
+	<joint name="chassis_to_wheel_a" type="continuous">
+        <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi_4}"/>
+        <parent link="base_link"/>
+        <child link="wheel_a"/>
+    </joint>
+
+	<joint name="chassis_to_wheel_b" type="continuous">
+        <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi_4}"/>
+        <parent link="base_link"/>
+        <child link="wheel_b"/>
+    </joint>
+
+	<joint name="chassis_to_wheel_c" type="continuous">
+        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
+        <parent link="base_link"/>
+        <child link="wheel_c"/>
+    </joint>
+
+	<joint name="chassis_to_wheel_d" type="continuous">
+        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
+        <parent link="base_link"/>
+        <child link="wheel_d"/>
+    </joint>
+
+	<ros2_control name="x_drive_controller" type="system">
+	    <hardware>
+            <plugin>mock_components/GenericSystem</plugin>
+            <param name="mock_sensor_commands">false</param>
+            <param name="state_following_offset">0.0</param>
+        </hardware>
+		<joint name="chassis_to_wheel_a">
+   			<command_interface name="velocity"/>
+			<state_interface name="velocity"/>
+   			<state_interface name="position"/>
+ 		</joint>
+		<joint name="chassis_to_wheel_b">
+   			<command_interface name="velocity"/>
+			<state_interface name="velocity"/>
+   			<state_interface name="position"/>
+ 		</joint>
+		<joint name="chassis_to_wheel_c">
+   			<command_interface name="velocity"/>
+			<state_interface name="velocity"/>
+   			<state_interface name="position"/>
+ 		</joint>
+		<joint name="chassis_to_wheel_d">
+   			<command_interface name="velocity"/>
+			<state_interface name="velocity"/>
+   			<state_interface name="position"/>
+ 		</joint>
+	</ros2_control>
+
+	<gazebo>
+  		<plugin filename="ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+    		<parameters>package://vex_robot/config/omni_wheel_params.yaml</parameters>
+			<controller_manager_prefix_node_name>controller_manager</controller_manager_prefix_node_name>
+  		</plugin>
+	</gazebo>
+</robot>
