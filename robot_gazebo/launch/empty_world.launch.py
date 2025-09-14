@@ -20,7 +20,7 @@ def generate_launch_description():
     world = os.path.join(
         get_package_share_directory('turtlebot3_gazebo'), # remember to change this later!
         'worlds',
-        'empty_world.sdf'
+        'empty_world.world'
     )
 
     gzserver_cmd = IncludeLaunchDescription(
@@ -66,7 +66,6 @@ def generate_launch_description():
     ld.add_action(gzserver_cmd)
     ld.add_action(gzclient_cmd)
     ld.add_action(spawn_turtlebot_cmd)
-    ld.add_action(robot_state_publisher_cmd)
     ld.add_action(set_env_vars_resources)
 
     return ld
