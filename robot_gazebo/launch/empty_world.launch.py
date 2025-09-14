@@ -37,13 +37,6 @@ def generate_launch_description():
         launch_arguments={'gz_args': '-g -v2 '}.items()
     )
 
-    robot_state_publisher_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(launch_file_dir, 'state_publisher.launch.py')
-        ),
-        launch_arguments={'use_sim_time': use_sim_time}.items()
-    )
-
     spawn_turtlebot_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(launch_file_dir, 'spawn_robot.launch.py')
