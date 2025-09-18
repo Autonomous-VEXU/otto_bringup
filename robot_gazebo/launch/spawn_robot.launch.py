@@ -118,6 +118,9 @@ def generate_launch_description():
                 executable='spawner',
                 arguments=['omni_wheel_drive_controller', '--controller-manager', '/controller_manager'],
                 parameters=[{'use_sim_time': True}],
+                remappings=[
+                ('/omni_wheel_drive_controller/cmd_vel', '/cmd_vel'), 
+                ],
                 output='screen'
             )
         ]

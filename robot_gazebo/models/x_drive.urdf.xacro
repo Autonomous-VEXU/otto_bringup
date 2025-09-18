@@ -4,8 +4,12 @@
 	<!-- properties-->
 	<xacro:property name="model_path" value="package://robot_description/models"/>
 	<xacro:property name="package_path" value="package://robot_gazebo/config"/>
+<!-- 
 	<xacro:property name="pi_4" value="0.7854"/>
+	<xacro:property name="pi" value="3.14159"/>
 	<xacro:property name="pi_2" value="1.5708"/>
+	<xacro:property name="pi_3/4" value="${pi_3}+${pi_4}"/> -->
+
 	<xacro:property name="wheel_rot" value="3.69138"/>
 	<xacro:property name="wheel_offs" value="0.14"/>
 	<xacro:property name="wheel_rad" value="0.01375"/>
@@ -87,25 +91,25 @@
 	</joint>
 
 	<joint name="chassis_to_wheel_a" type="continuous">
-        <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi_4}"/>
+        <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi/4}"/>
         <parent link="base_link"/>
         <child link="wheel_a"/>
     </joint>
 
 	<joint name="chassis_to_wheel_b" type="continuous">
-        <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi_4}"/>
+        <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${-3* (pi/4)}"/>
         <parent link="base_link"/>
         <child link="wheel_b"/>
     </joint>
 
 	<joint name="chassis_to_wheel_c" type="continuous">
-        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
+        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi/4}"/>
         <parent link="base_link"/>
         <child link="wheel_c"/>
     </joint>
 
 	<joint name="chassis_to_wheel_d" type="continuous">
-        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
+        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${3 *(pi/4)}"/>
         <parent link="base_link"/>
         <child link="wheel_d"/>
     </joint>
