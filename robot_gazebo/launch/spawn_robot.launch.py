@@ -3,28 +3,21 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, TimerAction
+from launch.actions import DeclareLaunchArgument, TimerAction
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch.event_handlers import OnProcessStart
 import xacro
 
 def generate_launch_description():
    
-    # URDF/ file path stuff
+    # URDF file path
     urdf_path = os.path.join(
         get_package_share_directory('robot_gazebo'),
-          'models',
+        'models',
         'x_drive.urdf.xacro'
     )
 
     urdf = xacro.process_file(urdf_path).toxml()
-
-    bridge_params = os.path.join(
-        get_package_share_directory('robot_gazebo'),
-        'config',
-        'x_drive_bridge.yaml'
-    )
 
     controllers_params = os.path.join(
         get_package_share_directory('robot_gazebo'),
@@ -32,26 +25,45 @@ def generate_launch_description():
         'omni_wheel_params.yaml'
     )
 
-    x_pose = LaunchConfiguration('x_pose', default='0.0')
-    y_pose = LaunchConfiguration('y_pose', default='0.0')
-
+    
     declare_x_position_cmd = DeclareLaunchArgument(
-        'x_pose', default_value='0.0',
-        description='Specify namespace of the robot')
+        'x_pose', 
+        default_value='0.0',
+        description='X position of the robot'
+    )
 
     declare_y_position_cmd = DeclareLaunchArgument(
-        'y_pose', default_value='0.0',
-        description='Specify namespace of the robot') 
+        'y_pose', 
+        default_value='0.0',
+        description='Y position of the robot'
+    ) 
 
-    # robot_state_publisher node
+   
+    x_pose = LaunchConfiguration('x_pose')
+    y_pose = LaunchConfiguration('y_pose')
+
+    # Robot state publisher
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': urdf},
-                    {'use_sim_time': True} ]
+        parameters=[
+            {'robot_description': urdf},
+            {'use_sim_time': True}
+        ]
     ) 
 
+    clock_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+        ],
+        parameters=[{'use_sim_time': True}],
+        output='screen',
+    )
+
+    # Spawn robot
     start_gazebo_ros_spawner_cmd = Node(
         package='ros_gz_sim',
         executable='create',
@@ -65,10 +77,14 @@ def generate_launch_description():
         output='screen',
     )
 
-    start_gazebo_ros_bridge_cmd = Node(
+    tf_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        parameters=[bridge_params],
+        arguments=[
+            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/tf_static@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+        ],
+        parameters=[{'use_sim_time': True}],
         output='screen',
     )
 
@@ -76,9 +92,11 @@ def generate_launch_description():
         package='ros_gz_image',
         executable='image_bridge',
         arguments=['/camera/image_raw'],
+        parameters=[{'use_sim_time': True}],
         output='screen',
     )
 
+    # Controller spawners
     joint_state_broadcaster_spawner = TimerAction(
         period=6.0,
         actions=[
@@ -105,17 +123,15 @@ def generate_launch_description():
         ]
     )
 
-    ld = LaunchDescription([
-        start_gazebo_ros_spawner_cmd,
-        start_gazebo_ros_bridge_cmd,
-        start_gazebo_ros_image_bridge_cmd,
+    return LaunchDescription([
+       
+        declare_x_position_cmd,
+        declare_y_position_cmd,
+        clock_bridge,
         robot_state_publisher_node,
+        start_gazebo_ros_spawner_cmd,
+        tf_bridge,
+        start_gazebo_ros_image_bridge_cmd,
         joint_state_broadcaster_spawner,
-        omni_controller_spawner
-        ])
-
-    # Declare the launch options
-    ld.add_action(declare_x_position_cmd)
-    ld.add_action(declare_y_position_cmd)
-
-    return ld
+        omni_controller_spawner,
+    ])
