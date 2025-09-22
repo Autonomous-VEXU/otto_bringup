@@ -18,13 +18,6 @@ def generate_launch_description():
     )
 
     urdf = xacro.process_file(urdf_path).toxml()
-
-    controllers_params = os.path.join(
-        get_package_share_directory('robot_gazebo'),
-        'config',
-        'omni_wheel_params.yaml'
-    )
-
     
     declare_x_position_cmd = DeclareLaunchArgument(
         'x_pose', 
