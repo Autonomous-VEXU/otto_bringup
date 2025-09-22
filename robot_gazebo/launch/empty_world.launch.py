@@ -36,7 +36,7 @@ def generate_launch_description():
         launch_arguments={'gz_args': '-g -v2 '}.items()
     )
 
-    spawn_turtlebot_cmd = IncludeLaunchDescription(
+    spawn_robot_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(launch_file_dir, 'spawn_robot.launch.py')
         ),
@@ -57,7 +57,7 @@ def generate_launch_description():
     # Add the commands to the launch description
     ld.add_action(gzserver_cmd)
     ld.add_action(gzclient_cmd)
-    ld.add_action(spawn_turtlebot_cmd)
+    ld.add_action(spawn_robot_cmd)
     ld.add_action(set_env_vars_resources)
 
     return ld
