@@ -4,15 +4,10 @@
 	<!-- properties-->
 	<xacro:property name="model_path" value="package://robot_description/models"/>
 	<xacro:property name="package_path" value="package://robot_gazebo/config"/>
-<!-- 
-	<xacro:property name="pi_4" value="0.7854"/>
-	<xacro:property name="pi" value="3.14159"/>
-	<xacro:property name="pi_2" value="1.5708"/>
-	<xacro:property name="pi_3/4" value="${pi_3}+${pi_4}"/> -->
-
-	<xacro:property name="wheel_rot" value="3.69138"/>
+	<!-- <xacro:property name="wheel_rot" value="3.69138"/> -->
 	<xacro:property name="wheel_offs" value="0.14"/>
 	<xacro:property name="wheel_rad" value="0.01375"/>
+	<xacro:property name="wheel_width" value="0.02159"/>
 	
 	<!--world link-->
 	<link name='world'/>
@@ -49,9 +44,12 @@
 	<!-- wheels -->
 	<xacro:macro name="wheel_link" params="name">
 		<link name="${name}">
+
 			<visual>
+			<origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
 				<geometry>
-					<mesh filename='${model_path}/wheel.dae'/>
+					<!-- <mesh filename='${model_path}/wheel.dae'/> -->
+					<cylinder radius='${wheel_rad*2}' length='${wheel_width}' />
 				</geometry>
 				<material name="dark_grey">
 					<color rgba="0.2 0.2 0.2 1.0"/>
@@ -59,8 +57,10 @@
 			</visual>
 
 			<collision>
+			<origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
 				<geometry>
-					<mesh filename='${model_path}/wheel.dae'/>
+					<!-- <mesh filename='${model_path}/wheel.dae'/> -->
+					<cylinder radius='${wheel_rad*2}' length='${wheel_width}' />
 				</geometry>
 			</collision>
 
@@ -83,6 +83,7 @@
 	<xacro:wheel_link name="wheel_c"/>
 	<xacro:wheel_link name="wheel_d"/>
 
+
 	<!-- joints-->
 	<joint name="world_2_chassis" type='fixed'>
 		<origin xyz="0 0 0.025" rpy="0 0 0"/>
@@ -94,24 +95,29 @@
         <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi/4}"/>
         <parent link="base_link"/>
         <child link="wheel_a"/>
+		<axis xyz="0 1 0"/> 
+
     </joint>
 
 	<joint name="chassis_to_wheel_b" type="continuous">
         <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${-3* (pi/4)}"/>
         <parent link="base_link"/>
         <child link="wheel_b"/>
+		<axis xyz="0 1 0"/> 
     </joint>
 
 	<joint name="chassis_to_wheel_c" type="continuous">
         <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi/4}"/>
         <parent link="base_link"/>
         <child link="wheel_c"/>
+		<axis xyz="0 1 0"/> 
     </joint>
 
 	<joint name="chassis_to_wheel_d" type="continuous">
         <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${3 *(pi/4)}"/>
         <parent link="base_link"/>
         <child link="wheel_d"/>
+		<axis xyz="0 1 0"/> 
     </joint>
 
 	<ros2_control name="GazeboSystem" type="system">
@@ -127,7 +133,6 @@
    			<command_interface name="velocity"/>
 			<state_interface name="position"/>
 			<state_interface name="velocity"/>
-
  		</joint>
 		<joint name="chassis_to_wheel_c">
    			<command_interface name="velocity"/>
