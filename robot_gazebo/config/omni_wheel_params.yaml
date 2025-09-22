@@ -18,7 +18,7 @@ omni_wheel_drive_controller:
       - "chassis_to_wheel_b"
       - "chassis_to_wheel_c"
       - "chassis_to_wheel_d"
-    robot_radius: 0.20
+    robot_radius: 0.188 # updated
     wheel_radius: 0.034925 # corrected from 0.0055
     odom_frame_id: odom
     base_frame_id: base_link

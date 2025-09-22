@@ -28,16 +28,6 @@
 			<geometry>
 				<mesh filename='${model_path}/chassis.dae'/>
 			</geometry>
-			
-			<surface>
-                    <friction>
-                        <ode>
-                            <mu>1.0</mu>
-                            <mu2>1.0</mu2>
-                            <fdir1>0 0 1</fdir1>
-                        </ode>
-                    </friction>
-                </surface>
 		</collision>
 
 		<inertial>
@@ -74,6 +64,15 @@
 					<!-- <mesh filename='${model_path}/wheel.dae'/> -->
 					<cylinder radius='${wheel_rad*2}' length='${wheel_width}' />
 				</geometry>
+					<surface>
+                    <friction>
+                        <ode>
+                            <mu>1.0</mu>
+                            <mu2>1.0</mu2>
+                            <fdir1>0 0 1</fdir1>
+                        </ode>
+                    </friction>
+                </surface>
 			</collision>
 
 			<inertial>

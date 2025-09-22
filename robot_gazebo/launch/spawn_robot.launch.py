@@ -31,7 +31,6 @@ def generate_launch_description():
         description='Y position of the robot'
     ) 
 
-   
     x_pose = LaunchConfiguration('x_pose')
     y_pose = LaunchConfiguration('y_pose')
 
