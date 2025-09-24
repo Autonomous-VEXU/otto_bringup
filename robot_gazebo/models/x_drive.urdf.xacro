@@ -11,19 +11,7 @@
 	<xacro:property name="wheel_width" value="0.02159"/>
 	
 	<!--world link-->
-	<link name='base_footprint'>
-	 <!-- <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="0.01"/>
-            <inertia
-                ixx="0.001"
-                ixy="0.0"
-                ixz="0.0"
-                iyy="0.001"
-                iyz="0.0"
-                izz="0.001"/>
-        </inertial> -->
-	</link>
+	<link name='base_footprint'/>
 
 	<!--chassis link-->
 	<link name="base_link">
@@ -62,7 +50,6 @@
 			<visual>
 			<origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
 				<geometry>
-					<!-- <mesh filename='${model_path}/wheel.dae'/> -->
 					<cylinder radius='${wheel_rad*2}' length='${wheel_width}' />
 				</geometry>
 				<material name="dark_grey">
@@ -73,7 +60,6 @@
 			<collision>
 			<origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
 				<geometry>
-					<!-- <mesh filename='${model_path}/wheel.dae'/> -->
 					<cylinder radius='${wheel_rad*2}' length='${wheel_width}' />
 				</geometry>
 					<surface>
@@ -142,6 +128,7 @@
 		<axis xyz="0 1 0"/> 
     </joint>
 
+	<!-- ROS 2 Control-->
 	<ros2_control name="GazeboSystem" type="system">
 	    <hardware>
             <plugin>gz_ros2_control/GazeboSimSystem</plugin>
@@ -167,7 +154,7 @@
 			<state_interface name="velocity"/>
  		</joint>
 	</ros2_control>
-
+	<!-- gazebo stuff -->
 	<gazebo>
   		<plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
 			<parameters>$(find robot_gazebo)/config/omni_wheel_params.yaml</parameters>

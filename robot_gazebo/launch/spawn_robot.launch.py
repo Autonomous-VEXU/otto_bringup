@@ -52,7 +52,7 @@ def generate_launch_description():
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
         ],
         parameters=[{'use_sim_time': True}],
-        output='screen',
+        output='screen'
     )
 
     # Spawn robot
@@ -66,7 +66,7 @@ def generate_launch_description():
             '-y', y_pose,
             '-z', '0.01'
         ],
-        output='screen',
+        output='screen'
     )
 
     tf_bridge = Node(
@@ -77,7 +77,7 @@ def generate_launch_description():
             '/tf_static@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
         ],
         parameters=[{'use_sim_time': True}],
-        output='screen',
+        output='screen'
     )
 
     start_gazebo_ros_image_bridge_cmd = Node(
@@ -85,7 +85,7 @@ def generate_launch_description():
         executable='image_bridge',
         arguments=['/camera/image_raw'],
         parameters=[{'use_sim_time': True}],
-        output='screen',
+        output='screen'
     )
 
     # Controller spawners
@@ -119,7 +119,6 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-       
         declare_x_position_cmd,
         declare_y_position_cmd,
         clock_bridge,

@@ -25,7 +25,9 @@ def generate_launch_description():
         package='teleop_twist_joy', 
         executable='teleop_node',
         name='teleop_twist_joy_node',
-        parameters=[config_path, {'publish_stamped_twist': publish_stamped_twist}, {'require_enable_button': False}],
+        parameters=[config_path, 
+                    {'publish_stamped_twist': publish_stamped_twist}, 
+                    {'require_enable_button': False}],
         remappings={('/cmd_vel', '/omni_wheel_drive_controller/cmd_vel')}
     )
 
