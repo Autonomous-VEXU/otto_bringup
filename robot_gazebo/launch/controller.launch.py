@@ -1,38 +1,40 @@
 import os
-
 from ament_index_python.packages import get_package_share_directory
-
 import launch
-import launch_ros.actions
+from launch_ros.actions import Node
 
 def generate_launch_description():
-    joy_config = launch.substitutions.LaunchConfiguration('joy_config')
     joy_dev = launch.substitutions.LaunchConfiguration('joy_dev')
     publish_stamped_twist = launch.substitutions.LaunchConfiguration('publish_stamped_twist')
-    config_filepath = launch.substitutions.LaunchConfiguration('config_filepath')
+
+    config_path = os.path.join(
+        get_package_share_directory('robot_gazebo'),
+        'config',
+        'xbox_controller.yaml'
+    )
+
+    joy_node = Node(
+        package='joy', 
+        executable='joy_node', 
+        name='joy_node',
+        parameters=[{'device_id': joy_dev, 'deadzone': 0.3, 'autorepeat_rate': 20.0,}, 
+                    config_path]
+    )
+
+    teleop_node = Node(
+        package='teleop_twist_joy', 
+        executable='teleop_node',
+        name='teleop_twist_joy_node',
+        parameters=[config_path, {'publish_stamped_twist': publish_stamped_twist}, {'require_enable_button': False}],
+        remappings={('/cmd_vel', '/omni_wheel_drive_controller/cmd_vel')}
+    )
 
     return launch.LaunchDescription([
-        launch.actions.DeclareLaunchArgument('joy_vel', default_value='/omni_wheel_drive_controller/cmd_vel'),
-        launch.actions.DeclareLaunchArgument('joy_config', default_value='ps3-holonomic'),
+        # args
         launch.actions.DeclareLaunchArgument('joy_dev', default_value='0'),
         launch.actions.DeclareLaunchArgument('publish_stamped_twist', default_value='true'),
-        launch.actions.DeclareLaunchArgument('config_filepath', default_value=[
-            launch.substitutions.TextSubstitution(text=os.path.join(
-                get_package_share_directory('teleop_twist_joy'), 'config', '')),
-            joy_config, launch.substitutions.TextSubstitution(text='.config.yaml')]),
 
-        launch_ros.actions.Node(
-            package='joy', executable='joy_node', name='joy_node',
-            parameters=[{
-                'device_id': joy_dev,
-                'deadzone': 0.3,
-                'autorepeat_rate': 20.0,
-            }, config_filepath]),
-
-        launch_ros.actions.Node(
-            package='teleop_twist_joy', executable='teleop_node',
-            name='teleop_twist_joy_node',
-            parameters=[config_filepath, {'publish_stamped_twist': publish_stamped_twist}, {'require_enable_button': False}],
-            remappings={('/omni_wheel_drive_controller/cmd_vel', launch.substitutions.LaunchConfiguration('joy_vel')),('/cmd_vel', '/omni_wheel_drive_controller/cmd_vel')},
-            ),
+        # nodes
+        joy_node,
+        teleop_node
     ])
