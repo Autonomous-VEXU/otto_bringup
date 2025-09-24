@@ -11,7 +11,19 @@
 	<xacro:property name="wheel_width" value="0.02159"/>
 	
 	<!--world link-->
-	<link name='base_footprint'/>
+	<link name='base_footprint'>
+	 <!-- <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.01"/>
+            <inertia
+                ixx="0.001"
+                ixy="0.0"
+                ixz="0.0"
+                iyy="0.001"
+                iyz="0.0"
+                izz="0.001"/>
+        </inertial> -->
+	</link>
 
 	<!--chassis link-->
 	<link name="base_link">
@@ -32,14 +44,14 @@
 
 		<inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="8.789"/>
+            <mass value="4.54"/>
            <inertia
-      			ixx="0.01"
+      			ixx="0.05487"
 				ixy="0.0"
 				ixz="0.0"
-				iyy="0.01"
+				iyy="0.05487"
 				iyz="0.0"
-				izz="0.01"/>
+				izz="0.10974"/>
     		</inertial>
 	</link>
 
@@ -77,14 +89,14 @@
 
 			<inertial>
             	<origin xyz="0 0 0" rpy="0 0 0"/>
-            	<mass value="0.076"/>
+            	<mass value="0.070"/>
 				<inertia
-      			ixx="0.01"
+      			ixx="0.001"
 				ixy="0.0"
 				ixz="0.0"
-				iyy="0.01"
+				iyy="0.001"
 				iyz="0.0"
-				izz="0.01"/>
+				izz="0.001"/>
         	</inertial>
 		</link>
 	</xacro:macro>
