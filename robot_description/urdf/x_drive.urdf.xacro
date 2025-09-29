@@ -16,7 +16,7 @@
 	<link name="base_link">
 		<visual>
 			<geometry>
-				<mesh filename='${model_path}/chassis.dae'/>
+				<mesh filename='${model_path}/chassis-v2.dae'/>
 			</geometry>
 		</visual>
 
