@@ -1,146 +1,261 @@
 <?xml version='1.0'?>
-<robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gz="http://gazebosim.org/schema">
 
-	<!-- properties-->
-	<xacro:property name="model_path" value="package://robot_description/models"/>
-	<xacro:property name="pi_4" value="0.7854"/>
-	<xacro:property name="pi_2" value="1.5708"/>
-	<xacro:property name="wheel_rot" value="3.69138"/>
-	<xacro:property name="wheel_offs" value="0.14"/>
-	<xacro:property name="wheel_rad" value="0.01375"/>
-	
-	<!--world link-->
-	<link name='world'/>
+    <static>false</static>
 
-	<!--chassis link-->
-	<link name="base_link">
-		<visual>
-			<geometry>
-				<mesh filename='${model_path}/chassis-v2.dae'/>
-			</geometry>
-		</visual>
+    <!-- properties-->
+    <xacro:property name="model_path" value="package://robot_description/models"/>
+    <xacro:property name="package_path" value="package://robot_gazebo/config"/>
+    <xacro:property name="wheel_offs" value="0.14"/>
+    <xacro:property name="wheel_rad" value="0.0349253"/>
+    <xacro:property name="wheel_width" value="0.02159"/>
+    
+    <!--world link-->
+    <link name='base_footprint'/>
 
-		<collision>
-			<geometry>
-				<mesh filename='${model_path}/chassis.dae'/>
-			</geometry>
-			<material name="pink">
-				<color rgba="237 72 154 1.0"/> 
-			</material>
-		</collision>
-		<inertial>
+    <!--base_link link-->
+    <link name="base_link">
+        <visual>
+            <!--
+            <geometry>
+                <mesh filename='${model_path}/chassis-v2.dae'/>
+            </geometry>
+            -->
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+
+            <geometry>  
+                <cylinder length="0.0315" radius="0.055"/>
+            </geometry>
+
+            <material name="pink">
+                <color rgba="0.93 0.28 0.60 1.0"/> 
+            </material>
+        </visual>
+
+        <collision>
+
+            <!--
+            <geometry>
+                <mesh filename='${model_path}/chassis.dae'/>
+            </geometry>
+            -->
+            <origin xyz="0 0 0.25" rpy="0 0 0"/>
+
+            <geometry>
+                <cylinder length="0.0315" radius="0.055"/>
+            </geometry>
+        </collision>
+
+        <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="8.789"/>
+            <mass value="4.54"/>
            <inertia
-      			ixx="0.01"
-				ixy="0.0"
-				ixz="0.0"
-				iyy="0.01"
-				iyz="0.0"
-				izz="0.01"/>
-    		</inertial>
-	</link>
+                  ixx="0.05487"
+                ixy="0.0"
+                ixz="0.0"
+                iyy="0.05487"
+                iyz="0.0"
+                izz="0.10974"/>
+            </inertial>
+    </link>
 
-	<!-- wheels -->
-	<xacro:macro name="wheel_link" params="name">
-		<link name="${name}">
-			<visual>
-				<geometry>
-					<mesh filename='${model_path}/wheel.dae'/>
-				</geometry>
-				<material name="dark_grey">
-					<color rgba="0.2 0.2 0.2 1.0"/>
-				</material>
-			</visual>
+    <!--Sensor links-->
+    <link name="imu_link"/>
 
-			<collision>
-				<geometry>
-					<mesh filename='${model_path}/wheel.dae'/>
-				</geometry>
-			</collision>
+    <link name="laser_frame">
+            <visual>
+                <origin xyz="0 0 0.0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder length="0.0315" radius="0.055"/>
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </visual>
 
-			<inertial>
-            	<origin xyz="0 0 0" rpy="0 0 0"/>
-            	<mass value="0.076"/>
-				<inertia
-      			ixx="0.01"
-				ixy="0.0"
-				ixz="0.0"
-				iyy="0.01"
-				iyz="0.0"
-				izz="0.01"/>
-        	</inertial>
-		</link>
-	</xacro:macro>
+            <collision>
+                <origin xyz="0.015 0 -0.0065" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder length="0.0315" radius="0.055"/>
+                </geometry>
+            </collision>
 
-	<xacro:wheel_link name="wheel_a"/>
-	<xacro:wheel_link name="wheel_b"/>
-	<xacro:wheel_link name="wheel_c"/>
-	<xacro:wheel_link name="wheel_d"/>
+            <inertial>
+                <origin xyz="0 0 0" />
+                <mass value="0.114" />
+                <inertia 
+                ixx="0.001" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="0.001" 
+                iyz="0.0" 
+                izz="0.001"/>
+            </inertial>
+    </link>
 
-	<!-- joints-->
-	<joint name="world_2_chassis" type='fixed'>
-		<origin xyz="0 0 0.025" rpy="0 0 0"/>
-		<parent link='world'/>
-		<child link='base_link'/>
-	</joint>
+    <!-- wheels -->
+    <xacro:macro name="wheel_link" params="name">
+        <link name="${name}">
+            <visual>
+            <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+                <geometry>
+                    <cylinder radius='${wheel_rad}' length='${wheel_width}' />
+                </geometry>
+                <material name="dark_grey">
+                    <color rgba="0.2 0.2 0.2 1.0"/>
+                </material>
+            </visual>
 
-	<joint name="chassis_to_wheel_a" type="continuous">
-        <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi_4}"/>
+            <collision>
+            <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+                <geometry>
+                    <cylinder radius='${wheel_rad}' length='${wheel_width}' />
+                </geometry>
+            </collision>
+
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.070"/>
+                <inertia
+                ixx="0.001"
+                ixy="0.0"
+                ixz="0.0"
+                iyy="0.001"
+                iyz="0.0"
+                izz="0.001"/>
+            </inertial>
+        </link>
+
+    <gazebo reference="${name}">
+        <mu1 value="0.2"/>
+        <mu2 value="1.5"/>
+        <kp value="10000000.0" />
+        <kd value="10000.0" />
+        <fdir1 value="0 0 1"/>
+        <maxContacts value= "1"/>
+    </gazebo>
+
+    </xacro:macro>
+
+    <xacro:wheel_link name="wheel_a"/>
+    <xacro:wheel_link name="wheel_b"/>
+    <xacro:wheel_link name="wheel_c"/>
+    <xacro:wheel_link name="wheel_d"/>
+
+    <!-- joints -->
+    <joint name="footprint_2_link" type='fixed'>
+        <origin xyz="0 0 0.025" rpy="0 0 0"/>
+        <parent link='base_footprint'/>
+        <child link='base_link'/>
+    </joint>
+
+    <joint name="chassis_to_wheel_a" type="continuous">
+        <origin xyz="-${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi/4}"/>
         <parent link="base_link"/>
         <child link="wheel_a"/>
+        <axis xyz="0 1 0"/> 
     </joint>
 
-	<joint name="chassis_to_wheel_b" type="continuous">
-        <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${pi_4}"/>
+    <joint name="chassis_to_wheel_b" type="continuous">
+        <origin xyz="${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${-3* (pi/4)}"/>
         <parent link="base_link"/>
         <child link="wheel_b"/>
+        <axis xyz="0 1 0"/> 
     </joint>
 
-	<joint name="chassis_to_wheel_c" type="continuous">
-        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
+    <joint name="chassis_to_wheel_c" type="continuous">
+        <origin xyz="${wheel_offs} ${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi/4}"/>
         <parent link="base_link"/>
         <child link="wheel_c"/>
+        <axis xyz="0 1 0"/> 
     </joint>
 
-	<joint name="chassis_to_wheel_d" type="continuous">
-        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 -${pi_4}"/>
+    <joint name="chassis_to_wheel_d" type="continuous">
+        <origin xyz="-${wheel_offs} -${wheel_offs} ${wheel_rad}" rpy="0 0 ${3 *(pi/4)}"/>
         <parent link="base_link"/>
         <child link="wheel_d"/>
+        <axis xyz="0 1 0"/> 
     </joint>
 
-	<ros2_control name="x_drive_controller" type="system">
-	    <hardware>
+    <!--Sensor Joints-->
+    <joint name="imu_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+        <origin xyz="0 0 0.04" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="laser_joint" type="fixed">
+         <parent link="base_link"/>
+         <child link="laser_frame"/>
+        <origin xyz="0 0 0.2" rpy="0 0 0"/>
+      </joint>
+
+    <!-- ROS 2 Control-->
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
             <plugin>mock_components/GenericSystem</plugin>
-            <param name="mock_sensor_commands">false</param>
+			<param name="mock_sensor_commands">false</param>
             <param name="state_following_offset">0.0</param>
         </hardware>
-		<joint name="chassis_to_wheel_a">
-   			<command_interface name="velocity"/>
-			<state_interface name="velocity"/>
-   			<state_interface name="position"/>
- 		</joint>
-		<joint name="chassis_to_wheel_b">
-   			<command_interface name="velocity"/>
-			<state_interface name="velocity"/>
-   			<state_interface name="position"/>
- 		</joint>
-		<joint name="chassis_to_wheel_c">
-   			<command_interface name="velocity"/>
-			<state_interface name="velocity"/>
-   			<state_interface name="position"/>
- 		</joint>
-		<joint name="chassis_to_wheel_d">
-   			<command_interface name="velocity"/>
-			<state_interface name="velocity"/>
-   			<state_interface name="position"/>
- 		</joint>
-	</ros2_control>
+        <joint name="chassis_to_wheel_a">
+               <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+         </joint>
+        <joint name="chassis_to_wheel_b">
+               <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+         </joint>
+        <joint name="chassis_to_wheel_c">
+               <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+         </joint>
+        <joint name="chassis_to_wheel_d">
+               <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+         </joint>
+    </ros2_control>
 
-	<gazebo>
-  		<plugin filename="ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-    		<parameters>package://vex_robot/config/omni_wheel_params.yaml</parameters>
-			<controller_manager_prefix_node_name>controller_manager</controller_manager_prefix_node_name>
-  		</plugin>
-	</gazebo>
+    <!-- Gazebo Sim Plugins -->
+    <gazebo>
+          <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>$(find robot_gazebo)/config/omni_wheel_params.yaml</parameters>
+          </plugin>
+    </gazebo>
+
+    <!-- Sensor Gazebo Tag-->
+    <gazebo reference="laser_frame">
+        <sensor name="lidar" type="gpu_lidar">
+            <pose>0 0 0 0 0 0</pose>
+            <always_on>true</always_on>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            <topic>scan</topic>
+            <gz_frame_id>laser_frame</gz_frame_id>
+            <lidar>
+                <scan>
+                    <horizontal>
+                        <samples>720</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.14</min_angle>
+                        <max_angle>3.14</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.05</min>
+                    <max>10.0</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </lidar>
+        </sensor>
+    </gazebo>
+
 </robot>
