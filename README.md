@@ -1,14 +1,15 @@
 # vex_robot
-Simulation packages for an x-drive vex like holonomic robot.
+Repository for the `robot_bringup` and `robot_description` packages.
 
-Core dependencies:
+### Core dependencies:
 - ros2_control
 - gz_ros2_control
+- 
 
-### robot_bringup
-Package for launching the robot on hardware. </br>
+# robot_bringup
+Package for launching the robot on hardware. Also contains an Rviz </br>
 
-Package File Tree:
+#### Package File Tree:
 ```
 /robot_bringup
 ├── /config
@@ -20,10 +21,10 @@ Package File Tree:
 └── package.xml
 ```
 
-### robot_description
+# robot_description
 Files + CAD models that describe the robot's physical properties. </br>
 
-Package File Tree:
+#### Package File Tree:
 ```
 /robot_description
 ├── /models
