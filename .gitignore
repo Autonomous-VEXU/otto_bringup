@@ -52,5 +52,5 @@ CATKIN_IGNORE
 
 # VSCode auto generated crap
 vex_robot.code-workspace
-/.vscode
+/.vscode/
 /log

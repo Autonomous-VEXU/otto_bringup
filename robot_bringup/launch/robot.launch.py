@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-
+import os
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler
+from launch.actions import RegisterEventHandler, ExecuteProcess
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from ament_index_python.packages import get_package_share_directory
+
 
 def generate_launch_description():
+
+    pkg_dir = get_package_share_directory('robot_bringup')
+    lidar_bringup_script = os.path.join(pkg_dir, 'scripts', 'lidar_bringup.bash')
+
     robot_description_content = Command([
         PathJoinSubstitution([FindExecutable(name="xacro")]),
         " ",
@@ -59,9 +65,15 @@ def generate_launch_description():
         )
     )
 
+    lidar_script =  ExecuteProcess(
+        cmd=[lidar_bringup_script],
+        output='screen'
+    )
+
     return LaunchDescription([
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delay_omni_controller,
+        lidar_script
     ])
