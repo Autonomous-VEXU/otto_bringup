@@ -1,0 +1,26 @@
+right:
+  hostname: 192.168.0.51
+  __ns: "/right"
+  frame_id: "r_laser"
+  tf_base_frame_id: "laser_frame_2"
+
+left:
+  hostname: 192.168.0.50
+  __ns: "/left"
+  frame_id: "l_laser"
+  tf_base_frame_id: "laser_frame_1"
+
+# arg name | type | default + notes
+# ---------------------------------
+  # range_min | double | 0.0
+  # range_max | double | 100.0
+  # intensity | bool   | True
+  # range_filter_handling | int | 0
+  # skip | int | 0
+    # how many scans are dropped before one is processed i.e. (5 = processed scan every 5 scans)
+  # tick_to_timestamp_mode | int | 0
+    # 0 = lidar ticks to ms to sys timestamp by software-pll
+    # 1 = ticks to ms by 1.0e-6*(curtick-firstTick)+firstSystemTimestamp
+    # 2 = ticks to ms directly to timestamp by sec = tick/1000000, nsec = 1000*(tick%1000000)
+  # tf_publish_rate | double | 10.0 (hz)
+    # set to 0 to deactivate tf messages
