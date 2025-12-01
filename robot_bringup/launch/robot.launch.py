@@ -28,7 +28,7 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     controller_config = PathJoinSubstitution([
-        FindPackageShare("robot_description"),
+        FindPackageShare("robot_bringup"),
         "config",
         "omni_wheel_params.yaml"
     ])
@@ -80,17 +80,12 @@ def generate_launch_description():
         launch_arguments={'side':'left'}.items()
     )
 
-    lidar_script =  ExecuteProcess(
-        cmd=[lidar_bringup_script],
-        output='screen'
-    )
-
     return LaunchDescription([
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
-        delay_omni_controller
+        delay_omni_controller,
         # lidar_script
-        #right_lidar,
-        #left_lidar
+        right_lidar,
+        left_lidar
     ])

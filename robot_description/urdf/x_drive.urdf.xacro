@@ -7,7 +7,7 @@
 
     <!-- properties-->
     <xacro:property name="model_path" value="package://robot_description/models"/>
-    <xacro:property name="package_path" value="package://robot_gazebo/config"/>
+    <xacro:property name="package_path" value="package://robot_description/config"/>
 
     <!--Wheel properties-->
     <xacro:property name="wheel_offs" value="0.14"/>
