@@ -1,6 +1,6 @@
-image_width: 1920
+image_width: 1600
 image_height: 1200
-camera_name: small_camera
+camera_name: small_camera_1
 camera_matrix:
   rows: 3
   cols: 3
