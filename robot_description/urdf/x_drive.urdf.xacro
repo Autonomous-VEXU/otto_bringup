@@ -1,7 +1,9 @@
 <?xml version='1.0'?>
-<robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:gz="http://gazebosim.org/schema">
+<robot name="x_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <static>false</static>
+
+    <xacro:include filename="$(find robot_description)/urdf/robot_variables.xacro"/>
 
     <!-- properties-->
     <xacro:property name="model_path" value="package://robot_description/models"/>
@@ -24,11 +26,6 @@
     <!--base_link link-->
     <link name="base_link">
         <visual>
-            <!--
-            <geometry>
-                <mesh filename='${model_path}/chassis-v2.dae'/>
-            </geometry>
-            -->
             <origin xyz="0 0 0.05" rpy="0 0 0"/>
 
             <geometry>  
@@ -41,11 +38,6 @@
         </visual>
 
         <collision>
-            <!--
-            <geometry>
-                <mesh filename='${model_path}/chassis.dae'/>
-            </geometry>
-            -->
             <origin xyz="0 0 0.05" rpy="0 0 0"/>
             <geometry>
                  <box size='0.20 0.20 0.02'/>
@@ -165,28 +157,6 @@
             <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
         </joint>
 
-        <gazebo reference='${camera_name}_link'>
-            <sensor name='${camera_name}_sensor' type="camera">
-                <pose>0 0 0 0 0 0</pose>
-                <camera>
-                    <horizontal_fov>1.26</horizontal_fov>
-                    <image>
-                        <width>1920</width>
-                        <height>1200</height>
-                        <format>R8G8B8</format>
-                    </image>
-                    <clip>
-                        <near>0.001</near>
-                        <far>20</far>
-                    </clip> 
-                </camera>
-                <always_on>true</always_on>
-                <update_rate>10</update_rate> <!-- i think our cameras run at 90fps max, but for sim, even 30 kills it. maybe 10 will be better? -->
-                <visualize>true</visualize>
-                <topic>/${camera_name}/image_raw</topic>
-                <gz_frame_id>${camera_name}_link_optical</gz_frame_id>
-            </sensor> 
-        </gazebo>
     </xacro:macro> 
 
     <!-- make sure to update ROS bridge in spawn_robot.launch.py! -->
@@ -236,41 +206,10 @@
             <origin xyz="${xyz}" rpy="0 0 ${yaw}"/> 
         </joint>
 
-        <!-- actual sensor-->
-        <gazebo reference="laser_frame_${sensor_number}">
-            <sensor name="lidar_${sensor_number}" type="gpu_lidar">
-                <pose>0 0 0 0 0 0</pose>
-                <always_on>true</always_on>
-                <visualize>true</visualize>
-                <update_rate>10</update_rate>
-                <topic>scan_${sensor_number}</topic>
-                <gz_frame_id>laser_frame_${sensor_number}</gz_frame_id>
-                <lidar>
-                    <scan>
-                        <horizontal>
-                            <samples>720</samples>
-                            <resolution>1</resolution>
-                            <min_angle>-0.785398163</min_angle>
-                            <max_angle>3.92699</max_angle>
-                        </horizontal>
-                    </scan>
-                    <range>
-                        <min>0.15</min>
-                        <max>10.0</max>
-                        <resolution>0.01</resolution>
-                    </range>
-                    <noise>
-                        <type>gaussian</type>
-                        <mean>0.0</mean>
-                        <stddev>0.01</stddev>
-                    </noise>
-                </lidar>
-            </sensor>
-        </gazebo>
     </xacro:macro>
 
-    <xacro:TiMXXS_lidar sensor_number='1' xyz="0.13 0.12 0.14" yaw='-${pi/4}'/>
-    <xacro:TiMXXS_lidar sensor_number='2' xyz="-0.13 0.12 0.14" yaw='${pi/4}'/> 
+    <xacro:TiMXXS_lidar sensor_number='1' xyz="-0.13 0.12 0.14" yaw='${3* pi/4}'/>
+    <xacro:TiMXXS_lidar sensor_number='2' xyz="-0.13 -0.12 0.14" yaw='-${ 3* pi/4}'/> 
     
     <!-- Joints -->
     <joint name="footprint_2_link" type='fixed'>
@@ -315,7 +254,7 @@
     </joint>
 
     <!-- ROS 2 Control-->
-    <ros2_control name="GazeboSystem" type="system">
+    <ros2_control name="DriveSystem" type="system">
         <hardware>
             <plugin>mock_components/GenericSystem</plugin>
 			<param name="mock_sensor_commands">false</param>
@@ -342,5 +281,4 @@
             <state_interface name="velocity"/>
          </joint>
     </ros2_control>
-
 </robot>
