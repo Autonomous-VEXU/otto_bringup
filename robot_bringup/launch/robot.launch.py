@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 import os
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler, ExecuteProcess
+from launch.actions import RegisterEventHandler, ExecuteProcess, IncludeLaunchDescription
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
 
@@ -27,7 +28,7 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_content}
 
     controller_config = PathJoinSubstitution([
-        FindPackageShare("robot_bringup"),
+        FindPackageShare("robot_description"),
         "config",
         "omni_wheel_params.yaml"
     ])
@@ -65,6 +66,20 @@ def generate_launch_description():
         )
     )
 
+    right_lidar = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
+        ),
+        launch_arguments={'side':'right'}.items()
+    )
+
+    left_lidar = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
+        ),
+        launch_arguments={'side':'left'}.items()
+    )
+
     lidar_script =  ExecuteProcess(
         cmd=[lidar_bringup_script],
         output='screen'
@@ -74,6 +89,8 @@ def generate_launch_description():
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
-        delay_omni_controller,
-        lidar_script
+        delay_omni_controller
+        # lidar_script
+        #right_lidar,
+        #left_lidar
     ])

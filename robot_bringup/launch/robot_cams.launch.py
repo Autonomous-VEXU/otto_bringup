@@ -10,12 +10,13 @@ def generate_launch_description():
     config_file = os.path.join(pkg_dir, 'config', 'camera_params.yaml')
     
     camera_1 = Node( 
-            package='usb_cam', 
-            executable='usb_cam_node_exe', 
-            output='screen',
-            name='camera_1',
-            parameters=[config_file]
+        package='usb_cam', 
+        executable='usb_cam_node_exe', 
+        output='screen',
+        name='camera_1',
+        parameters=[config_file]
     ) 
+    
     camera_2 = Node( 
         package='usb_cam', 
         executable='usb_cam_node_exe', 
@@ -23,6 +24,7 @@ def generate_launch_description():
         name='camera_2',
         parameters=[config_file]
     )  
+
     camera_3 = Node( 
         package='usb_cam', 
         executable='usb_cam_node_exe', 
