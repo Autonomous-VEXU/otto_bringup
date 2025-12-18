@@ -16,7 +16,7 @@ def launch_setup(context):
     side = LaunchConfiguration('side').perform(context)
 
     # get yaml parameters
-    robot_dir = get_package_share_directory('robot_bringup')
+    robot_dir = get_package_share_directory('otto_bringup')
     config_file = os.path.join(robot_dir, 'config', 'lidar_config.yaml')
     with open(config_file, "r") as f:
         config = yaml.safe_load(f)

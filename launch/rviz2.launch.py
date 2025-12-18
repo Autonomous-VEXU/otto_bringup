@@ -7,7 +7,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
   rviz_config_dir = os.path.join( # get path to Rviz2 config file
-    get_package_share_directory('robot_description'),
+    get_package_share_directory('otto_description'),
     'rviz',
     'model.rviz')
   

@@ -7,7 +7,7 @@ from launch.actions import TimerAction
 from ament_index_python import get_package_share_directory
 
 def generate_launch_description():
-    pkg_dir= get_package_share_directory('robot_bringup')
+    pkg_dir= get_package_share_directory('otto_bringup')
     config_file = os.path.join(pkg_dir, 'config', 'camera_params.yaml')
 
     camera_1 = Node( 

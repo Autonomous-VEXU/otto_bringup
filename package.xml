@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>robot_description</name>
+  <name>otto_bringup</name>
   <version>0.0.0</version>
-  <description>x_drive robot description</description>
+  <description>Launch files for Otto the robot.</description>
   <maintainer email="kmhswimgirl@gmail.com">kylie herbstzuber</maintainer>
   <license>Apache-2.0</license>
 
@@ -14,6 +14,5 @@
 
   <export>
     <build_type>ament_cmake</build_type>
-    <gazebo_ros gazebo_model_path="${prefix}/.."/>
   </export>
 </package>

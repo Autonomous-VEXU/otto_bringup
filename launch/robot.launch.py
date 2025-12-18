@@ -12,23 +12,23 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    pkg_dir = get_package_share_directory('robot_bringup')
+    pkg_dir = get_package_share_directory('otto_bringup')
     lidar_bringup_script = os.path.join(pkg_dir, 'scripts', 'lidar_bringup.bash')
 
     robot_description_content = Command([
         PathJoinSubstitution([FindExecutable(name="xacro")]),
         " ",
         PathJoinSubstitution([
-            FindPackageShare("robot_description"),
+            FindPackageShare("otto_description"),
             "urdf",
             "x_drive.urdf.xacro"
         ])
     ])
     
-    robot_description = {"robot_description": robot_description_content}
+    robot_description = {"otto_description": robot_description_content}
 
     controller_config = PathJoinSubstitution([
-        FindPackageShare("robot_bringup"),
+        FindPackageShare("otto_bringup"),
         "config",
         "omni_wheel_params.yaml"
     ])

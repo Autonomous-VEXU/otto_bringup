@@ -10,7 +10,7 @@ camera_1:
     image_width: 1600
     image_height: 1200
     camera_name: "small_camera_1"
-    camera_info_url: "package://robot_bringup/config/camera1.yaml"
+    camera_info_url: "package://otto_bringup/config/camera1.yaml"
     brightness: -1
     contrast: -1
     saturation: -1
@@ -29,7 +29,7 @@ camera_2:
     image_width: 1600
     image_height: 1200
     camera_name: "small_camera_2"
-    camera_info_url: "package://robot_bringup/config/camera2.yaml"
+    camera_info_url: "package://otto_bringup/config/camera2.yaml"
     brightness: -1
     contrast: -1
     saturation: -1
@@ -49,7 +49,7 @@ camera_3:
     image_width: 1600
     image_height: 1200
     camera_name: "small_camera_3"
-    camera_info_url: "package://robot_bringup/config/camera3.yaml"
+    camera_info_url: "package://otto_bringup/config/camera3.yaml"
     brightness: -1
     contrast: -1
     saturation: -1
@@ -68,7 +68,7 @@ camera_4:
     image_width: 1600
     image_height: 1200
     camera_name: "small_camera_4"
-    camera_info_url: "package://robot_bringup/config/camera4.yaml"
+    camera_info_url: "package://otto_bringup/config/camera4.yaml"
     brightness: -1
     contrast: -1
     saturation: -1
