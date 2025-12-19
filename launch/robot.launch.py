@@ -25,7 +25,7 @@ def generate_launch_description():
         ])
     ])
     
-    robot_description = {"otto_description": robot_description_content}
+    robot_description = {"robot_description": robot_description_content}
 
     controller_config = PathJoinSubstitution([
         FindPackageShare("otto_bringup"),
