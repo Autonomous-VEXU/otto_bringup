@@ -24,13 +24,15 @@ def generate_launch_description():
         description='toggle for camera nodes being launched'
     )
 
-    # conditionally select URDF
-    urdf_file = PythonExpression(
-        [launch_cams, "== 'true' ? 'otto.urdf.xacro' : 'otto_lite.urdf.xacro'"]
-    )
+   # conditionally select URDF
+    urdf_file = PythonExpression([
+        "'otto.urdf.xacro' if '",
+        launch_cams,
+        "' == 'true' else 'otto_lite.urdf.xacro'"
+    ])
 
     # robot URDF/Xacro processing
-    robot_description_full = Command([
+    robot_description_urdf = Command([
         PathJoinSubstitution([FindExecutable(name="xacro")]),
         " ",
         PathJoinSubstitution([
@@ -40,7 +42,7 @@ def generate_launch_description():
         ])
     ])
 
-    robot_description = {"robot_description": robot_description_full}
+    robot_description = {"robot_description": robot_description_urdf}
 
     # ros2_control nodes + controller managers
     controller_config = PathJoinSubstitution([
@@ -103,6 +105,6 @@ def generate_launch_description():
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delay_omni_controller,
-        right_lidar,
-        left_lidar
+        # right_lidar,
+        # left_lidar
     ])

@@ -34,7 +34,6 @@ def launch_setup(context):
     node = Node( # node 
         package='sick_scan_xd',
         executable='sick_generic_caller',
-        output='screen',
         arguments=node_arguments
     )
 
