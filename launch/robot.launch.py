@@ -1,32 +1,48 @@
 #!/usr/bin/env python3
 import os
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler, ExecuteProcess, IncludeLaunchDescription
+from launch.actions import RegisterEventHandler, IncludeLaunchDescription, DeclareLaunchArgument
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
 
+'''Top level launch file for launching all of the controllers and sensors on Otto'''
 
 def generate_launch_description():
 
     # package directories
     pkg_dir = get_package_share_directory('otto_bringup')
 
-    robot_description_content = Command([
+    # camera launch argument
+    launch_cams = LaunchConfiguration('launch_cams')
+    launch_cams_cmd = DeclareLaunchArgument(
+        'launch_cams',
+        default_value='false',
+        description='toggle for camera nodes being launched'
+    )
+
+    # conditionally select URDF
+    urdf_file = PythonExpression(
+        [launch_cams, "== 'true' ? 'otto.urdf.xacro' : 'otto_lite.urdf.xacro'"]
+    )
+
+    # robot URDF/Xacro processing
+    robot_description_full = Command([
         PathJoinSubstitution([FindExecutable(name="xacro")]),
         " ",
         PathJoinSubstitution([
             FindPackageShare("otto_description"),
             "robot",
-            "otto.urdf.xacro"
+            urdf_file
         ])
     ])
-    
-    robot_description = {"robot_description": robot_description_content}
 
+    robot_description = {"robot_description": robot_description_full}
+
+    # ros2_control nodes + controller managers
     controller_config = PathJoinSubstitution([
         FindPackageShare("otto_description"),
         "config",
@@ -66,6 +82,7 @@ def generate_launch_description():
         )
     )
 
+    # lidar bringup 
     right_lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
@@ -81,11 +98,11 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        launch_cams_cmd,
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delay_omni_controller,
-        # lidar_script
         right_lidar,
         left_lidar
     ])
