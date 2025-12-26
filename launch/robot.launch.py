@@ -8,6 +8,8 @@ from launch_ros.actions import Node
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
+from launch.conditions import IfCondition
+
 
 '''Top level launch file for launching all of the controllers and sensors on Otto'''
 
@@ -17,14 +19,22 @@ def generate_launch_description():
     pkg_dir = get_package_share_directory('otto_bringup')
 
     # camera launch argument
-    launch_cams = LaunchConfiguration('launch_cams')
+    launch_cams = LaunchConfiguration('cams')
     launch_cams_cmd = DeclareLaunchArgument(
-        'launch_cams',
+        'cams',
         default_value='false',
         description='toggle for camera nodes being launched'
     )
 
-   # conditionally select URDF
+    # lidar launch argument
+    launch_lidar = LaunchConfiguration('lidar')
+    launch_lidar_cmd = DeclareLaunchArgument(
+        'lidar',
+        default_value='true',
+        description='toggle for lidar nodes being launched'
+    )
+
+    # conditionally select URDF
     urdf_file = PythonExpression([
         "'otto.urdf.xacro' if '",
         launch_cams,
@@ -89,6 +99,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
         ),
+        condition=IfCondition(launch_lidar),
         launch_arguments={'side':'right'}.items()
     )
 
@@ -96,15 +107,26 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
         ),
+        condition=IfCondition(launch_lidar),
         launch_arguments={'side':'left'}.items()
+    )
+
+    # camera bringup
+    robot_cams = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_dir, 'launch', 'robot_cams.launch.py')
+        ),
+        condition=IfCondition(launch_cams)
     )
 
     return LaunchDescription([
         launch_cams_cmd,
+        launch_lidar_cmd,
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delay_omni_controller,
-        # right_lidar,
-        # left_lidar
+        right_lidar,
+        left_lidar,
+        robot_cams
     ])
