@@ -3,13 +3,15 @@
 import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import TimerAction
+from launch.actions import TimerAction, DeclareLaunchArgument
 from ament_index_python import get_package_share_directory
 
 def generate_launch_description():
-    pkg_dir= get_package_share_directory('otto_bringup')
-    config_file = os.path.join(pkg_dir, 'config', 'camera_params.yaml')
+    # directory file paths
+    config_dir= get_package_share_directory('otto_description')
+    config_file = os.path.join(config_dir, 'config', 'camera_params.yaml')
 
+    # camera nodes
     camera_1 = Node( 
         package='usb_cam', 
         executable='usb_cam_node_exe', 
@@ -65,7 +67,7 @@ def generate_launch_description():
         parameters=[config_file]
     )  
     
-
+    # delays for the camera nodes to prevent crashing
     timer_2 = TimerAction( 
         period=2.0,
         actions=[camera_2]
