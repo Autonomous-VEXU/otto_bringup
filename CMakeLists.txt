@@ -12,8 +12,13 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-    DIRECTORY launch config
-    DESTINATION share/${PROJECT_NAME}
+  DIRECTORY launch config
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  src/frame_id_converter.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
