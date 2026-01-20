@@ -44,16 +44,10 @@ def generate_launch_description():
         name='teleop_twist_joy_node',
         parameters=[config_path, 
             {'publish_stamped_twist': publish_stamped_twist}, 
-            {'require_enable_button': False}],
-        remappings=[
-                ('/cmd_vel', '/joy_cmd_vel'), 
-            ]
-    )
-
-    cmd_vel_converter = Node(
-        package='otto_bringup',
-        executable='frame_id_converter.py',
-        output='screen'
+            {'require_enable_button': False}]
+        # remappings=[
+        #         ('/cmd_vel', '/omni_wheel_drive_controller/cmd_vel'), # change back later...
+        #     ]
     )
 
     return LaunchDescription([
@@ -61,6 +55,5 @@ def generate_launch_description():
         stamped_twist_arg,
         controller_name_arg,
         joy_node,
-        cmd_vel_converter,
         teleop_node
     ])
