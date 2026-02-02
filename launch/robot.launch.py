@@ -33,6 +33,14 @@ def generate_launch_description():
         description='toggle for lidar nodes being launched'
     )
 
+    # misc sensors (imu / color sensor / fuel gauge) launch arg
+    launch_sensors = LaunchConfiguration('sensors')
+    launch_sensors_cmd = DeclareLaunchArgument(
+        'sensors',
+        default_value='false',
+        description='toggle for the other sensor nodes being launched'
+    )
+
     # conditionally select URDF
     urdf_file = PythonExpression([
         "'otto.urdf.xacro' if '",
@@ -93,6 +101,14 @@ def generate_launch_description():
         )
     )
 
+    # imu / color sensor / battery gauge launch file
+    misc_sensors = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_dir, 'launch', 'sensors.launch.py')
+        ),
+        condition=IfCondition(launch_sensors)
+    )
+
     # lidar bringup 
     right_lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -110,7 +126,6 @@ def generate_launch_description():
         launch_arguments={'side':'left'}.items()
     )
 
-
     # camera bringup
     robot_cams = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -122,10 +137,12 @@ def generate_launch_description():
     return LaunchDescription([
         launch_cams_cmd,
         launch_lidar_cmd,
+        launch_sensors_cmd,
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delay_omni_controller,
+        misc_sensors,
         right_lidar,
         left_lidar,
         robot_cams
