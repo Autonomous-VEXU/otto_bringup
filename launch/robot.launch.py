@@ -10,7 +10,6 @@ from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
 from launch.conditions import IfCondition
 
-
 '''Top level launch file for launching all of the controllers and sensors on Otto'''
 
 def generate_launch_description():
@@ -110,6 +109,7 @@ def generate_launch_description():
         condition=IfCondition(launch_lidar),
         launch_arguments={'side':'left'}.items()
     )
+
 
     # camera bringup
     robot_cams = IncludeLaunchDescription(
