@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-import os
-
-
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
@@ -37,6 +34,8 @@ def generate_launch_description():
         default_value='true',
         description='toggle for launching the fuel gauge node',
     )
+
+    
     
     # IMU driver
     imu = Node(
