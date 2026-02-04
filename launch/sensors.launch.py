@@ -12,8 +12,7 @@ from launch.conditions import IfCondition
 def generate_launch_description():
     '''Various sensors on Otto'''
 
-    # sensor configuration file
-
+    # sensor configuration file...
 
     # launching IMU argument
     launch_imu = LaunchConfiguration('imu')

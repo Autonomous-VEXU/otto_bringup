@@ -79,6 +79,10 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[robot_description, controller_config],
+        remappings=[
+        ('/omni_wheel_drive_controller/cmd_vel', "/cmd_vel"),
+        ('/omni_wheel_drive_controller/odom', '/odom')
+        ],
         output="both",
     )
 
@@ -91,7 +95,7 @@ def generate_launch_description():
     omni_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["omni_wheel_drive_controller", "--controller-manager", "/controller_manager"],
+        arguments=["omni_wheel_drive_controller", "--controller-manager", "/controller_manager"]
     )
 
     delay_omni_controller = RegisterEventHandler(
