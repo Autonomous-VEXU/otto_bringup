@@ -62,11 +62,7 @@ def generate_launch_description():
     robot_description = {"robot_description": robot_description_urdf}
 
     # ros2_control nodes + controller managers
-    controller_config = PathJoinSubstitution([
-        FindPackageShare("otto_description"),
-        "config",
-        "omni_wheel_params.yaml"
-    ])
+    controller_config = PathJoinSubstitution([FindPackageShare("otto_description"), "config", "omni_wheel_params.yaml"])
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -98,10 +94,31 @@ def generate_launch_description():
         arguments=["omni_wheel_drive_controller", "--controller-manager", "/controller_manager"]
     )
 
-    delay_omni_controller = RegisterEventHandler(
+    intake1_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["intake_low_controller", "--controller-manager", "/controller_manager"]
+    )
+
+    intake2_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["intake_mid_controller", "--controller-manager", "/controller_manager"]
+    )
+
+    intake3_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["intake_high_controller", "--controller-manager", "/controller_manager"]
+    )
+
+    delay_controller_spawners = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[omni_controller_spawner],
+            on_exit=[omni_controller_spawner, 
+                     intake1_controller_spawner, 
+                     intake2_controller_spawner,
+                     intake3_controller_spawner]
         )
     )
 
@@ -145,7 +162,7 @@ def generate_launch_description():
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
-        delay_omni_controller,
+        delay_controller_spawners,
         misc_sensors,
         right_lidar,
         left_lidar,
