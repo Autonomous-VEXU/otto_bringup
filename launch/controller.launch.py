@@ -26,7 +26,7 @@ def generate_launch_description():
         'config',
         controller_name]
     )
-
+  
     # tele-op controller nodes
     joy_node = Node(
         package='joy', 
@@ -45,9 +45,6 @@ def generate_launch_description():
         parameters=[config_path, 
             {'publish_stamped_twist': publish_stamped_twist}, 
             {'require_enable_button': False}]
-        # remappings=[
-        #         ('/cmd_vel', '/omni_wheel_drive_controller/cmd_vel'), # change back later...
-        #     ]
     )
 
     return LaunchDescription([
