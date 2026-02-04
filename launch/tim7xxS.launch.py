@@ -25,12 +25,10 @@ def launch_setup(context):
 
     # build node args
     sick_scan_pkg_prefix = get_package_share_directory('sick_scan_xd')
-    # launchfile = os.path.basename(__file__)[:-3]  # "<lidar_name>.launch"
     launchfile = "sick_tim_7xxS.launch" # this is so dumb imo
     launch_file_path = os.path.join(sick_scan_pkg_prefix, 'launch', launchfile)
     node_arguments = [launch_file_path] + yaml_to_node_arguments(config[side])
 
-  
     node = Node( # node 
         package='sick_scan_xd',
         executable='sick_generic_caller',

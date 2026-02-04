@@ -3,7 +3,7 @@ import os
 from launch import LaunchDescription
 from launch.actions import RegisterEventHandler, IncludeLaunchDescription, DeclareLaunchArgument
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration, PythonExpression
+from launch.substitutions import Command, PathJoinSubstitution, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
@@ -11,7 +11,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch.conditions import IfCondition
 from launch_ros.parameter_descriptions import ParameterValue
 
-'''Top level launch file for launching all of the controllers and sensors on Otto'''
+'''Top level launch file for launching all of the controllers and sensors needed to run Otto'''
 
 def generate_launch_description():
 
@@ -42,16 +42,17 @@ def generate_launch_description():
         description='robot is being run on the Jetson Orin'
     )
 
-    serial_port = PythonExpression(["'/dev/ttyACM0' if '", jetson, "' == 'true' else '/dev/ttyTHS1'"])
-    mock_hw = PythonExpression(["'false' if '", jetson, "' == 'true' else 'true'"])
-
     # misc sensors (imu / color sensor / fuel gauge) launch arg
     launch_sensors = LaunchConfiguration('sensors')
     launch_sensors_cmd = DeclareLaunchArgument(
         'sensors',
         default_value='false',
-        description='toggle for the other sensor nodes being launched'
+        description='toggle for the other sensor nodes being launched',
     )
+
+    # URDF arguments
+    serial_port = PythonExpression(["'/dev/ttyACM0' if '", jetson, "' == 'true' else '/dev/ttyTHS1'"])
+    mock_hw = PythonExpression(["'false' if '", jetson, "' == 'true' else 'true'"])
     
     # robot URDF/Xacro processing
     urdf_path = PathJoinSubstitution([FindPackageShare('otto_description'), "robot", 'otto.urdf.xacro'])
@@ -66,15 +67,16 @@ def generate_launch_description():
 
     robot_description = {"robot_description": robot_description_urdf}
 
-    # ros2_control nodes + controller managers
-    controller_config = PathJoinSubstitution([FindPackageShare("otto_description"), "config", "ros2_control.yaml"])
-
+    # robot state publisher node
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         output="both",
-        parameters=[robot_description],
-    )
+        parameters=[robot_description]
+    )    
+    
+    # ros2_control nodes + controller managers
+    controller_config = PathJoinSubstitution([FindPackageShare("otto_description"), "config", "ros2_control.yaml"])
 
     controller_manager_node = Node(
         package="controller_manager",
