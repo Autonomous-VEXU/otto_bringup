@@ -17,6 +17,7 @@ def generate_launch_description():
 
     # package directories
     pkg_dir = get_package_share_directory('otto_bringup')
+    scan_merger_pkg = get_package_share_directory('otto_scan_merger')
 
     # camera launch argument
     launch_cams = LaunchConfiguration('cams')
@@ -156,6 +157,15 @@ def generate_launch_description():
         launch_arguments={'side':'left'}.items()
     )
 
+    # laser_scan_merger launch file
+    scan_merger = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
+        ),
+        launch_arguments={'robotname':'x_drive'}.items(),
+        condition=IfCondition(launch_lidar)
+    )
+
     # camera bringup
     robot_cams = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -177,5 +187,6 @@ def generate_launch_description():
         misc_sensors,
         right_lidar,
         left_lidar,
+        scan_merger,
         robot_cams
     ])

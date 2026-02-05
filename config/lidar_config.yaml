@@ -3,12 +3,14 @@ right:
   __ns: "/right"
   frame_id: "r_laser"
   tf_base_frame_id: "laser_frame_2"
+  range_min: 0.15
 
 left:
   hostname: 192.168.1.101
   __ns: "/left"
   frame_id: "l_laser"
   tf_base_frame_id: "laser_frame_1"
+  range_min: 0.15
 
 # arg name | type | default + notes
 # ---------------------------------
