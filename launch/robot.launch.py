@@ -17,7 +17,7 @@ def generate_launch_description():
 
     # package directories
     pkg_dir = get_package_share_directory('otto_bringup')
-    scan_merger_pkg = get_package_share_directory('otto_scan_merger')
+    scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
     # camera launch argument
     launch_cams = LaunchConfiguration('cams')
