@@ -39,31 +39,28 @@ def generate_launch_description():
     imu = Node(
         package="ros_imu_lsm6dsv16x",
         executable="lsm6dsv16x",
-        screen="on",
         condition=IfCondition(launch_imu)
     )
 
-    # color sensor driver
-    color_sensor = Node(
-        package="ros_colorsens_9960",
-        executable='apds9960',
-        screen='on',
-        condition=IfCondition(launch_color_sensor)
-    )
+    # # color sensor driver
+    # color_sensor = Node(
+    #     package="ros_colorsens_9960",
+    #     executable='apds9960',
+    #     condition=IfCondition(launch_color_sensor)
+    # )
 
-    # fuel gauge driver
-    battery_level = Node(
-        package="ros_fuelgauge_max17263",
-        executable="max17263_node",
-        screen="on",
-        condition=IfCondition(launch_fuel_gauge)
-    )
+    # # fuel gauge driver
+    # battery_level = Node(
+    #     package="ros_fuelgauge_max17263",
+    #     executable="max17263_node",
+    #     condition=IfCondition(launch_fuel_gauge)
+    # )
 
     return LaunchDescription([
         launch_imu_cmd,
         launch_color_sensor_cmd,
         launch_fuel_gauge_cmd,
         imu,
-        color_sensor,
-        battery_level
+        # color_sensor,
+        # battery_level
     ])
