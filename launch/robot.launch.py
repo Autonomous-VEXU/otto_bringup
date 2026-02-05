@@ -34,14 +34,6 @@ def generate_launch_description():
         description='toggle for lidar nodes being launched'
     )
 
-    # device that the robot is being run on
-    jetson = LaunchConfiguration('jetson')
-    launch_jetson_cmd = launch_sensors_cmd = DeclareLaunchArgument(
-        'jetson',
-        default_value='false',
-        description='robot is being run on the Jetson Orin'
-    )
-
     # misc sensors (imu / color sensor / fuel gauge) launch arg
     launch_sensors = LaunchConfiguration('sensors')
     launch_sensors_cmd = DeclareLaunchArgument(
@@ -50,9 +42,19 @@ def generate_launch_description():
         description='toggle for the other sensor nodes being launched',
     )
 
-    # URDF arguments
-    serial_port = PythonExpression(["'/dev/ttyACM0' if '", jetson, "' == 'true' else '/dev/ttyTHS1'"])
-    mock_hw = PythonExpression(["'false' if '", jetson, "' == 'true' else 'true'"])
+    mock_hw = LaunchConfiguration('mock_hw')
+    mock_hw_cmd = DeclareLaunchArgument(
+        'mock_hw',
+        default_value='false',
+        description='what hardware plugin to run'
+    ) 
+
+    serial_port = LaunchConfiguration('serial_port')
+    serial_port_cmd = DeclareLaunchArgument(
+        'serial_port',
+        default_value='/dev/ttyTHS1',
+        description='serial port for the hw interface'
+    ) 
     
     # robot URDF/Xacro processing
     urdf_path = PathJoinSubstitution([FindPackageShare('otto_description'), "robot", 'otto.urdf.xacro'])
@@ -83,19 +85,19 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[robot_description, controller_config],
         remappings=[
-        ('/omni_wheel_drive_controller/cmd_vel', "/cmd_vel"),
-        ('/omni_wheel_drive_controller/odom', '/odom'),
-        ('/intake_low_controller/commands','/intake_vel_1'),
-        ('/intake_mid_controller/commands','/intake_vel_2'),
-        ('/intake_high_controller/commands','/intake_vel_3')
+            ('/omni_wheel_drive_controller/cmd_vel', "/cmd_vel"),
+            ('/omni_wheel_drive_controller/odom', '/odom'),
+            ('/intake_low_controller/commands','/intake_vel_1'),
+            ('/intake_mid_controller/commands','/intake_vel_2'),
+            ('/intake_high_controller/commands','/intake_vel_3')
         ],
-        output="both",
+        output="both"
     )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"]
     )
 
     omni_controller_spawner = Node(
@@ -166,7 +168,8 @@ def generate_launch_description():
         launch_cams_cmd,
         launch_lidar_cmd,
         launch_sensors_cmd,
-        launch_jetson_cmd,
+        mock_hw_cmd,
+        serial_port_cmd,
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
