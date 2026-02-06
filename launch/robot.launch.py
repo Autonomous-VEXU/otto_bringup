@@ -108,8 +108,7 @@ def generate_launch_description():
             "omni_wheel_drive_controller", 
             "--controller-manager", "/controller_manager",
             "--controller-ros-args",
-            "-r /omni_wheel_drive_controller/odom:=/odom",
-            "-r /omni_wheel_drive_controller/cmd_vel:=/cmd_vel"
+            "-r /omni_wheel_drive_controller/odom:=/odom -r /omni_wheel_drive_controller/cmd_vel:=/cmd_vel"
         ]
     )
 
