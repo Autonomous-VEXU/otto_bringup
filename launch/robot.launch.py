@@ -85,13 +85,13 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[robot_description, controller_config],
-        remappings=[
-            ('/omni_wheel_drive_controller/cmd_vel', "/cmd_vel"),
-            ('/omni_wheel_drive_controller/odom', '/odom'),
-            # ('/intake_low_controller/commands','/intake_vel_1'),
-            # ('/intake_mid_controller/commands','/intake_vel_2'),
-            # ('/intake_high_controller/commands','/intake_vel_3')
-        ],
+        # remappings=[
+        #     ('/omni_wheel_drive_controller/cmd_vel', "/cmd_vel"),
+        #     ('/omni_wheel_drive_controller/odom', '/odom'),
+        #     # ('/intake_low_controller/commands','/intake_vel_1'),
+        #     # ('/intake_mid_controller/commands','/intake_vel_2'),
+        #     # ('/intake_high_controller/commands','/intake_vel_3')
+        # ],
         output="both"
     )
 
