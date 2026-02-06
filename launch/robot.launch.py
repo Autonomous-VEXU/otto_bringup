@@ -3,7 +3,7 @@ import os
 from launch import LaunchDescription
 from launch.actions import RegisterEventHandler, IncludeLaunchDescription, DeclareLaunchArgument
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, PathJoinSubstitution, LaunchConfiguration, PythonExpression
+from launch.substitutions import Command, PathJoinSubstitution, LaunchConfiguration
 from launch_ros.actions import Node
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
@@ -88,9 +88,9 @@ def generate_launch_description():
         remappings=[
             ('/omni_wheel_drive_controller/cmd_vel', "/cmd_vel"),
             ('/omni_wheel_drive_controller/odom', '/odom'),
-            ('/intake_low_controller/commands','/intake_vel_1'),
-            ('/intake_mid_controller/commands','/intake_vel_2'),
-            ('/intake_high_controller/commands','/intake_vel_3')
+            # ('/intake_low_controller/commands','/intake_vel_1'),
+            # ('/intake_mid_controller/commands','/intake_vel_2'),
+            # ('/intake_high_controller/commands','/intake_vel_3')
         ],
         output="both"
     )
@@ -104,32 +104,44 @@ def generate_launch_description():
     omni_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["omni_wheel_drive_controller", "--controller-manager", "/controller_manager", '--controller-ros-args','-r /omni_wheel_drive_controller/odom:=/odom',
-                           '--controller-ros-args','-r /omni_wheel_drive_controller/cmd_vel:=/cmd_vel']
+        arguments=["omni_wheel_drive_controller", 
+                   "--controller-manager", "/controller_manager",
+                   '--controller-ros-args', '-r', '/omni_wheel_drive_controller/odom:=/odom',
+                   '--controller-ros-args', '-r', '/omni_wheel_drive_controller/cmd_vel:=/cmd_vel']
     )
 
     intake1_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["intake_low_controller", "--controller-manager", "/controller_manager"]
+        arguments=["intake_low_controller", 
+                   "--controller-manager", "/controller_manager",
+                   '--controller-ros-args', '-r', '/intake_low_controller/commands:=/intake_vel_1']
     )
 
     intake2_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["intake_mid_controller", "--controller-manager", "/controller_manager"]
+        arguments=["intake_mid_controller", 
+                   "--controller-manager", "/controller_manager",
+                   '--controller-ros-args', '-r', '/intake_mid_controller/commands:=/intake_vel_2']
     )
 
     intake3_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["intake_high_controller", "--controller-manager", "/controller_manager"]
+        arguments=["intake_high_controller", 
+                   "--controller-manager", "/controller_manager",
+                   '--controller-ros-args', '-r', '/intake_high_controller/commands:=/intake_vel_3']
     )
 
     delay_controller_spawners = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[omni_controller_spawner, intake1_controller_spawner, intake2_controller_spawner, intake3_controller_spawner]
+            on_exit=[omni_controller_spawner 
+                    #  intake1_controller_spawner, 
+                    #  intake2_controller_spawner, 
+                    #  intake3_controller_spawner
+                     ]
         )
     )
 
