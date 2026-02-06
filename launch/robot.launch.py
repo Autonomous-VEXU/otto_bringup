@@ -17,7 +17,7 @@ def generate_launch_description():
 
     # package directories
     pkg_dir = get_package_share_directory('otto_bringup')
-    # scan_merger_pkg = get_package_share_directory('laser_scan_merger')
+    scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
     # camera launch argument
     launch_cams = LaunchConfiguration('cams')
@@ -85,13 +85,6 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[robot_description, controller_config],
-        # remappings=[
-        #     ('/omni_wheel_drive_controller/cmd_vel', "/cmd_vel"),
-        #     ('/omni_wheel_drive_controller/odom', '/odom'),
-        #     # ('/intake_low_controller/commands','/intake_vel_1'),
-        #     # ('/intake_mid_controller/commands','/intake_vel_2'),
-        #     # ('/intake_high_controller/commands','/intake_vel_3')
-        # ],
         output="both"
     )
 
@@ -172,13 +165,13 @@ def generate_launch_description():
     )
 
     # laser_scan_merger launch file
-    # scan_merger = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
-    #     ),
-    #     launch_arguments={'robotname':'x_drive'}.items(),
-    #     condition=IfCondition(launch_lidar)
-    # )
+    scan_merger = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
+        ),
+        launch_arguments={'robotname':'x_drive'}.items(),
+        condition=IfCondition(launch_lidar)
+    )
 
     # camera bringup
     robot_cams = IncludeLaunchDescription(
@@ -201,6 +194,6 @@ def generate_launch_description():
         misc_sensors,
         right_lidar,
         left_lidar,
-        #scan_merger,
+        scan_merger,
         robot_cams
     ])
