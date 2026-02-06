@@ -104,35 +104,38 @@ def generate_launch_description():
     omni_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["omni_wheel_drive_controller", 
-                   "--controller-manager", "/controller_manager",
-                   '--controller-ros-args', '-r', '/omni_wheel_drive_controller/odom:=/odom',
-                   '--controller-ros-args', '-r', '/omni_wheel_drive_controller/cmd_vel:=/cmd_vel']
+        arguments=[
+            "omni_wheel_drive_controller", 
+            "--controller-manager", "/controller_manager",
+            "--controller-ros-args",
+            "-r /omni_wheel_drive_controller/odom:=/odom",
+            "-r /omni_wheel_drive_controller/cmd_vel:=/cmd_vel"
+        ]
     )
 
-    intake1_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["intake_low_controller", 
-                   "--controller-manager", "/controller_manager",
-                   '--controller-ros-args', '-r', '/intake_low_controller/commands:=/intake_vel_1']
-    )
+    # intake1_controller_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner",
+    #     arguments=["intake_low_controller", 
+    #                "--controller-manager", "/controller_manager",
+    #                '--controller-ros-args', '-r', '/intake_low_controller/commands:=/intake_vel_1']
+    # )
 
-    intake2_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["intake_mid_controller", 
-                   "--controller-manager", "/controller_manager",
-                   '--controller-ros-args', '-r', '/intake_mid_controller/commands:=/intake_vel_2']
-    )
+    # intake2_controller_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner",
+    #     arguments=["intake_mid_controller", 
+    #                "--controller-manager", "/controller_manager",
+    #                '--controller-ros-args', '-r', '/intake_mid_controller/commands:=/intake_vel_2']
+    # )
 
-    intake3_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["intake_high_controller", 
-                   "--controller-manager", "/controller_manager",
-                   '--controller-ros-args', '-r', '/intake_high_controller/commands:=/intake_vel_3']
-    )
+    # intake3_controller_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner",
+    #     arguments=["intake_high_controller", 
+    #                "--controller-manager", "/controller_manager",
+    #                '--controller-ros-args', '-r', '/intake_high_controller/commands:=/intake_vel_3']
+    # )
 
     delay_controller_spawners = RegisterEventHandler(
         event_handler=OnProcessExit(
