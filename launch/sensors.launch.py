@@ -39,6 +39,7 @@ def generate_launch_description():
     imu = Node(
         package="ros_imu_lsm6dsv16x",
         executable="lsm6dsv16x",
+        parameters=['frame_id'],
         condition=IfCondition(launch_imu)
     )
 
