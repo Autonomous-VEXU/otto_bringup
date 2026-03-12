@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 from otto_bringup.srv import Intake # type: ignore
 from ros_colorsens_apds9960.msg import ColorProximity
 from std_msgs.msg import Float64MultiArray
+
 
 '''
 intake moveset:
@@ -18,29 +21,40 @@ class Intake(Node):
     def __init__(self):
         super().__init__('intake')
 
-        # intake service server
-        self.intake = self.create_service()
+        #sensor debug flag
+        sensor_test = True
 
-        # parameters
-        self.detected_ball = 0 # ball color (0 = none, 1 = red, 2 = blue)
-        self.motor_speed = 4.0 # motor base speed
+        if sensor_test == False:
+            # intake service server
+            self.intake = self.create_service()
 
-        # create publishers for intake motors
-        self.low_motor = self.create_publisher(Float64MultiArray, '/intake_low', 10)
-        self.mid_motor = self.create_publisher(Float64MultiArray, '/intake_mid', 10)
-        self.top_motor = self.create_publisher(Float64MultiArray, '/intake_high', 10)
+            # parameters
+            self.detected_ball = 0 # ball color (0 = none, 1 = red, 2 = blue)
+            self.motor_speed = 4.0 # motor base speed
+
+            # create publishers for intake motors
+            self.low_motor = self.create_publisher(Float64MultiArray, '/intake_low', 10)
+            self.mid_motor = self.create_publisher(Float64MultiArray, '/intake_mid', 10)
+            self.top_motor = self.create_publisher(Float64MultiArray, '/intake_high', 10)
+
+        # fix qos
+        color_qos = QoSProfile(
+            depth=10,
+            reliability=QoSReliabilityPolicy.BEST_EFFORT
+        )
 
         # subscribe to color sensor topic
-        self.apds9960 = self.create_subscription(ColorProximity, "/color_sensor", self.color_sensor_callback, 10)
+        self.apds9960 = self.create_subscription(ColorProximity, "/color_sensor", self.color_sensor_callback, qos_profile=color_qos)
     
     def color_sensor_callback(self, msg:ColorProximity):
         '''color sensor topic callback'''
         # is there a ball present?
-        if msg.proximity > 0.009:
+        if msg.proximity > 0.025:
             if msg.color.r >= msg.color.b:
-                self.detected_ball = 1
+                self.get_logger().info("detected red ball")
             elif msg.color.b > msg.color.r:
                 self.detected_ball = 2
+                self.get_logger().info("detected blue ball")
         else:
             self.detected_ball = 0
 
@@ -97,7 +111,7 @@ def main(args=None):
     rclpy.init(args=args)
     node = Intake()
     try:
-        rclpy.spin()
+        rclpy.spin(node)
     except KeyboardInterrupt:
         pass
     node.destroy_node()

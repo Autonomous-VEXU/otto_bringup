@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 
+import os
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
 from launch.conditions import IfCondition
+from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     '''Various sensors on Otto'''
 
     # sensor configuration file... maybe?
+    this_dir = get_package_share_directory('otto_bringup')
+    sensor_config = os.path.join(this_dir, "config", "sensor_config.yaml")
 
     # launching IMU argument
     launch_imu = LaunchConfiguration('imu')
@@ -39,16 +43,17 @@ def generate_launch_description():
     imu = Node(
         package="ros_imu_lsm6dsv16x",
         executable="lsm6dsv16x",
-        parameters=['frame_id'],
+        parameters=[sensor_config],
         condition=IfCondition(launch_imu)
     )
 
-    # # color sensor driver
-    # color_sensor = Node(
-    #     package="ros_colorsens_9960",
-    #     executable='apds9960',
-    #     condition=IfCondition(launch_color_sensor)
-    # )
+    # color sensor driver
+    color_sensor = Node(
+        package="ros_colorsens_9960",
+        executable='apds9960_node',
+        parameters=[sensor_config],
+        condition=IfCondition(launch_color_sensor)
+    )
 
     # # fuel gauge driver
     # battery_level = Node(
@@ -62,6 +67,6 @@ def generate_launch_description():
         launch_color_sensor_cmd,
         launch_fuel_gauge_cmd,
         imu,
-        # color_sensor,
+        color_sensor,
         # battery_level
     ])

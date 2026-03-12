@@ -23,6 +23,7 @@ install(
 
 install(PROGRAMS
   src/test_publisher.py
+  src/intake.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
