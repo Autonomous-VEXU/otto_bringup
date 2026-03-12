@@ -11,8 +11,13 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
+find_package(rosidl_default_generators REQUIRED)
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/Intake.srv"
+)
+
 install(
-  DIRECTORY launch config
+  DIRECTORY launch config srv
   DESTINATION share/${PROJECT_NAME}
 )
 

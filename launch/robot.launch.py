@@ -110,7 +110,7 @@ def generate_launch_description():
         executable="spawner",
         arguments=["intake_low_controller", 
                    "--controller-manager", "/controller_manager",
-                   '--controller-ros-args', '-r /intake_low_controller/commands:=/intake_vel_1']
+                   '--controller-ros-args', '-r /intake_low_controller/commands:=/intake_low']
     )
 
     intake2_controller_spawner = Node(
@@ -118,7 +118,7 @@ def generate_launch_description():
         executable="spawner",
         arguments=["intake_mid_controller", 
                    "--controller-manager", "/controller_manager",
-                   '--controller-ros-args', '-r /intake_mid_controller/commands:=/intake_vel_2']
+                   '--controller-ros-args', '-r /intake_mid_controller/commands:=/intake_mid']
     )
 
     intake3_controller_spawner = Node(
@@ -126,7 +126,7 @@ def generate_launch_description():
         executable="spawner",
         arguments=["intake_high_controller", 
                    "--controller-manager", "/controller_manager",
-                   '--controller-ros-args', '-r /intake_high_controller/commands:=/intake_vel_3']
+                   '--controller-ros-args', '-r /intake_high_controller/commands:=/intake_high']
     )
 
     delay_controller_spawners = RegisterEventHandler(
