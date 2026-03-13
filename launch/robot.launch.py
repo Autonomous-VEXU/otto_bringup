@@ -17,7 +17,7 @@ def generate_launch_description():
 
     # package directories
     pkg_dir = get_package_share_directory('otto_bringup')
-    scan_merger_pkg = get_package_share_directory('laser_scan_merger')
+    #scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
     # camera launch argument
     launch_cams = LaunchConfiguration('cams')
@@ -39,7 +39,7 @@ def generate_launch_description():
     launch_sensors = LaunchConfiguration('sensors')
     launch_sensors_cmd = DeclareLaunchArgument(
         'sensors',
-        default_value='false',
+        default_value='true',
         description='toggle for the other sensor nodes being launched',
     )
 
@@ -53,7 +53,7 @@ def generate_launch_description():
     serial_port = LaunchConfiguration('serial_port')
     serial_port_cmd = DeclareLaunchArgument(
         'serial_port',
-        default_value='/dev/ttyTHS1',
+        default_value='/dev/ttyACM1',
         description='serial port for the hw interface'
     ) 
     
@@ -164,14 +164,14 @@ def generate_launch_description():
         launch_arguments={'side':'left'}.items()
     )
 
-    # laser_scan_merger launch file
-    scan_merger = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
-        ),
-        launch_arguments={'robotname':'x_drive'}.items(),
-        condition=IfCondition(launch_lidar)
-    )
+    ## laser_scan_merger launch file
+    #scan_merger = IncludeLaunchDescription(
+    #    PythonLaunchDescriptionSource(
+    #        os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
+    #    ),
+    #    launch_arguments={'robotname':'x_drive'}.items(),
+    #    condition=IfCondition(launch_lidar)
+    #)
 
     # camera bringup
     robot_cams = IncludeLaunchDescription(
@@ -194,6 +194,6 @@ def generate_launch_description():
         misc_sensors,
         right_lidar,
         left_lidar,
-        scan_merger,
+     #   scan_merger,
         robot_cams
     ])

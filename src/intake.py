@@ -1,19 +1,25 @@
 #!/usr/bin/env python3
+
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
-from otto_bringup.srv import Intake # type: ignore
+from otto_bringup.srv import Intake
 from ros_colorsens_apds9960.msg import ColorProximity
-from std_msgs.msg import Float64MultiArray
-
+from std_msgs.msg import Float64MultiArray, Empty
+from sensor_msgs.msg import JointState
 
 '''
-intake moveset:
-    - intake ball (to_hopper:bool, duration) [will need color sensor integration]
-    - score high (duration)
-    - score mid (duration)
-    - score low (duration)
-    - reject ball (level:int) [will need color sensor integration]
+intake motor commands (sign)
+------------------------
+      | L | M | T |
+------|---|---|---|
+hopper| - | - | - |
+bottom| + | - | - |
+middle| - | + | - |
+high  | - | + | + |
+
+columns == motor group
+rows == desired location
 '''
 
 class Intake(Node):
@@ -21,21 +27,24 @@ class Intake(Node):
     def __init__(self):
         super().__init__('intake')
 
-        #sensor debug flag
-        sensor_test = True
+        # parameters
+        self.detected_ball = 0 # ball color (0 = none, 1 = red, 2 = blue)
+        self.motor_speed = 10.0 # intake motor base speed
 
-        if sensor_test == False:
-            # intake service server
-            self.intake = self.create_service()
+        # E stop toggle
+        self.e_stop = False
 
-            # parameters
-            self.detected_ball = 0 # ball color (0 = none, 1 = red, 2 = blue)
-            self.motor_speed = 4.0 # motor base speed
+        # motor Float arrays
+        self.motor_pos = Float64MultiArray()
+        self.motor_pos.data = [-1.0 * self.motor_speed]
 
-            # create publishers for intake motors
-            self.low_motor = self.create_publisher(Float64MultiArray, '/intake_low', 10)
-            self.mid_motor = self.create_publisher(Float64MultiArray, '/intake_mid', 10)
-            self.top_motor = self.create_publisher(Float64MultiArray, '/intake_high', 10)
+        self.motor_neg = Float64MultiArray()
+        self.motor_neg.data = [self.motor_speed]
+
+        # create publishers for intake motors
+        self.low_motor = self.create_publisher(Float64MultiArray, '/intake_low', 10)
+        self.mid_motor = self.create_publisher(Float64MultiArray, '/intake_mid', 10)
+        self.top_motor = self.create_publisher(Float64MultiArray, '/intake_high', 10)
 
         # fix qos
         color_qos = QoSProfile(
@@ -44,68 +53,53 @@ class Intake(Node):
         )
 
         # subscribe to color sensor topic
-        self.apds9960 = self.create_subscription(ColorProximity, "/color_sensor", self.color_sensor_callback, qos_profile=color_qos)
-    
+        self.create_subscription(ColorProximity, "/color_sensor", self.color_sensor_callback, qos_profile=color_qos)
+
+        # subscribe to e stop topic
+        self.create_subscription(Empty, "/e_stop", self.stop_motors, 10)
+
     def color_sensor_callback(self, msg:ColorProximity):
         '''color sensor topic callback'''
-        # is there a ball present?
+        if self.e_stop == True:
+            return
+        
+        self.mid_motor.publish(self.motor_neg)
+        self.low_motor.publish(self.motor_pos)
+
         if msg.proximity > 0.025:
             if msg.color.r >= msg.color.b:
                 self.get_logger().info("detected red ball")
+                self.detected_ball = 1
+                self.top_motor.publish(self.motor_pos)
             elif msg.color.b > msg.color.r:
                 self.detected_ball = 2
                 self.get_logger().info("detected blue ball")
+                self.top_motor.publish(self.motor_neg)
         else:
             self.detected_ball = 0
+            self.mid_motor.publish(self.motor_neg)
+            self.low_motor.publish(self.motor_pos)
 
-    def intake_srv_callback(self, request, reponse):
-        '''intake service callback''' 
-        match request.type:
-            case 0: 
-                self.intake_ball()
-            case 1: 
-                self.score_low(request.toggle)
-            case 2: 
-                self.score_mid(request.toggle)
-            case 3: 
-                self.score_top(request.toggle)
-            case 4:
-                self.stop_motors()
+    def block_jam_detection(self, msg:JointState): 
+        '''detects if a block gets stuck in a intake motor'''
 
-    def intake_ball(self): 
-        '''intake a ball to the hopper'''
-        msg = Float64MultiArray()
-        msg.data = self.motor_speed
-        self.low_motor.publish()
-        self.mid_motor.publish()
-
-        # if color is not what is expected, reject ball with score top
+        pass
         
-    def score_top(self):
-        '''score a ball in the top goal'''
-        self.low_motor.publish()
-        self.mid_motor.publish()
-        self.top_motor.publish()
-
-    def score_mid(self): 
-        '''score a ball in the mid goal'''
-        self.low_motor.publish()
-        self.mid_motor.publish()
-        self.top_motor.publish()
-
-    def score_low(self): 
-        '''score a ball in the low goal'''
-        self.low_motor.publish()
-        self.mid_motor.publish()
-        self.top_motor.publish()
-    
-    def stop_motors(self):
+    def stop_motors(self, msg:Empty):
+        '''stops all three intake motors through an toggling boolean e-stop'''
         zero_msg = Float64MultiArray()
-        zero_msg.data = 0.0
+        zero_msg.data = [0.0]
+
         self.low_motor.publish(zero_msg)
         self.mid_motor.publish(zero_msg)
-        self.high_motor.publish(zero_msg)
-        self.get_logger().info("Stopped intake motors")
+        self.top_motor.publish(zero_msg)
+
+        self.e_stop = not self.e_stop # toggle e_stop
+
+        if self.e_stop == True:
+            self.get_logger().warn("E-Stop Activated")
+        else:
+            self.get_logger().warn("E-Stop Disabled")
 
 def main(args=None):
     rclpy.init(args=args)

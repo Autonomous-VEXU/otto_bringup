@@ -15,13 +15,13 @@ def generate_launch_description():
     this_dir = get_package_share_directory('otto_bringup')
     sensor_config = os.path.join(this_dir, "config", "sensor_config.yaml")
 
-    # launching IMU argument
-    launch_imu = LaunchConfiguration('imu')
-    launch_imu_cmd = DeclareLaunchArgument(
-        'imu',
-        default_value='true',
-        description='toggle for launching the IMU node',
-    )
+    # # launching IMU argument
+    # launch_imu = LaunchConfiguration('imu')
+    # launch_imu_cmd = DeclareLaunchArgument(
+    #     'imu',
+    #     default_value='true',
+    #     description='toggle for launching the IMU node',
+    # )
 
     # launching color sensor argument
     launch_color_sensor = LaunchConfiguration('color_sensor')
@@ -31,25 +31,25 @@ def generate_launch_description():
         description='toggle for launching the color sensor node',
     )
 
-    # launching fuel gauge argument
-    launch_fuel_gauge = LaunchConfiguration('fuel_gauge')
-    launch_fuel_gauge_cmd = DeclareLaunchArgument(
-        'fuel_gauge',
-        default_value='true',
-        description='toggle for launching the fuel gauge node',
-    )
+    # # launching fuel gauge argument
+    # launch_fuel_gauge = LaunchConfiguration('fuel_gauge')
+    # launch_fuel_gauge_cmd = DeclareLaunchArgument(
+    #     'fuel_gauge',
+    #     default_value='true',
+    #     description='toggle for launching the fuel gauge node',
+    # )
     
-    # IMU driver
-    imu = Node(
-        package="ros_imu_lsm6dsv16x",
-        executable="lsm6dsv16x",
-        parameters=[sensor_config],
-        condition=IfCondition(launch_imu)
-    )
+    # # IMU driver
+    # imu = Node(
+    #     package="ros_imu_lsm6dsv16x",
+    #     executable="lsm6dsv16x",
+    #     parameters=[sensor_config],
+    #     condition=IfCondition(launch_imu)
+    # )
 
     # color sensor driver
     color_sensor = Node(
-        package="ros_colorsens_9960",
+        package="ros_colorsens_apds9960",
         executable='apds9960_node',
         parameters=[sensor_config],
         condition=IfCondition(launch_color_sensor)
@@ -63,10 +63,10 @@ def generate_launch_description():
     # )
 
     return LaunchDescription([
-        launch_imu_cmd,
+        # launch_imu_cmd,
         launch_color_sensor_cmd,
-        launch_fuel_gauge_cmd,
-        imu,
+        # launch_fuel_gauge_cmd,
+        # imu,
         color_sensor,
         # battery_level
     ])
