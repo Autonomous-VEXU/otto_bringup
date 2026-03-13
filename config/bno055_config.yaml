@@ -1,14 +1,3 @@
-# color sensor config
-apds9960_node:
-  ros__parameters:
-    dev_path: "/dev/i2c-1"
-
-# Sparkfun IMU config
-lsm6dsv16x:
-  ros__parameters:
-    dev_path: "/dev/i2c-1"
-
-# BNO055 IMU config
 bno055:
   ros__parameters:
     ros_topic_prefix: "bno055/"
