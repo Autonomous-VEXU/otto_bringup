@@ -2,16 +2,15 @@
 
 import os
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
 from launch.conditions import IfCondition
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    '''Various sensors on Otto'''
+    '''Launching the driver nodes for the non-LiDAR sensors on Otto'''
 
-    # sensor configuration file... maybe?
     this_dir = get_package_share_directory('otto_bringup')
     sensor_config = os.path.join(this_dir, "config", "sensor_config.yaml")
 
@@ -39,17 +38,27 @@ def generate_launch_description():
         description='toggle for launching the fuel gauge node',
     )
     
-    # IMU driver
-    imu = Node(
-        package="ros_imu_lsm6dsv16x",
-        executable="lsm6dsv16x",
+    # # IMU driver (Sparkfun LSM6DSV16X)
+    # lsm6_imu = Node(
+    #     package="ros_imu_lsm6dsv16x",
+    #     executable="lsm6dsv16x",
+    #     parameters=[sensor_config],
+    #     condition=IfCondition(launch_imu)
+    # )
+
+    # IMU driver (Adafruit BNO055)
+    bno055_imu = Node(
+        package="bno055",
+        executable="bno055",
         parameters=[sensor_config],
+        remappings=[
+                ('/bno055/imu', '/imu')], # remap in order to keep the 'bno055' namespace on other topics
         condition=IfCondition(launch_imu)
     )
 
     # color sensor driver
     color_sensor = Node(
-        package="ros_colorsens_9960",
+        package="ros_colorsens_apds9960",
         executable='apds9960_node',
         parameters=[sensor_config],
         condition=IfCondition(launch_color_sensor)
@@ -66,7 +75,7 @@ def generate_launch_description():
         launch_imu_cmd,
         launch_color_sensor_cmd,
         launch_fuel_gauge_cmd,
-        imu,
+        bno055_imu,
         color_sensor,
         # battery_level
     ])
