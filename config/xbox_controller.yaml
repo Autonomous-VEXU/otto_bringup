@@ -11,7 +11,7 @@ teleop_twist_joy_node:
       z: 0.0
     
     axis_angular:
-      yaw: 3    
+      yaw: 2
       pitch: 0   
       roll: 0    
     
@@ -23,6 +23,7 @@ teleop_twist_joy_node:
     enable_button: 4             
     enable_turbo_button: -1      
 
+    sticky_buttons: True
     require_enable_button: false  
     publish_stamped_twist: true
     frame: 'base_link'
