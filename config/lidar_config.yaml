@@ -1,21 +1,31 @@
 right:
   hostname: 192.168.1.101
-  __ns: "/right"
-  frame_id: "r_laser"
+  __ns: "/right_lidar"
+  frame_id: "right_lidar"
   tf_base_frame_id: "laser_frame_2"
   range_min: 0.30
+  range_max: 30.0
+  min_ang: -1.745329252
+  max_ang: 1.745329252
+  tf_publish_rate: 50.0
 
 left:
   hostname: 192.168.1.103
-  __ns: "/left"
-  frame_id: "l_laser"
+  __ns: "/left_lidar"
+  frame_id: "left_lidar"
   tf_base_frame_id: "laser_frame_1"
   range_min: 0.30
+  range_max: 30.0
+  min_ang: -1.745329252
+  max_ang: 1.745329252
+  tf_publish_rate: 50.0
 
 # arg name | type | default + notes
 # ---------------------------------
   # range_min | double | 0.0
   # range_max | double | 100.0
+  # min_ang | double | -2.35619449 (-135 deg)
+  # max_ang | double | 2.35619449 (135 deg)
   # intensity | bool   | True
   # laserscan_topic | string | "scan"
   # cloud_topic | string | "cloud"
@@ -28,3 +38,7 @@ left:
     # 2 = ticks to ms directly to timestamp by sec = tick/1000000, nsec = 1000*(tick%1000000)
   # tf_publish_rate | double | 10.0 (hz)
     # set to 0 to deactivate tf messages
+  # add_transform_xyz_rpy | string | "0 0 0 0 0 0"
+    # adds transform to point cloud given its not in polar coordinates
+  # tf_base_lidar_xyz_rpy | string | "0 0 0 0 0 0"
+    # T[base,lidar], 6D pose (x,y,z,roll,pitch,yaw) in meter resp. radians with parent "map" and child "cloud"
