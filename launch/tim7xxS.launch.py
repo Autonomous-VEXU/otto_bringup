@@ -32,7 +32,8 @@ def launch_setup(context):
     node = Node( # node 
         package='sick_scan_xd',
         executable='sick_generic_caller',
-        arguments=node_arguments
+        arguments=node_arguments,
+        output="log"
     )
 
     return [node]

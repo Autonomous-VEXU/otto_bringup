@@ -17,7 +17,6 @@ def generate_launch_description():
 
     # package directories
     pkg_dir = get_package_share_directory('otto_bringup')
-    scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
     # camera launch argument
     launch_cams = LaunchConfiguration('cams')
@@ -55,7 +54,7 @@ def generate_launch_description():
         'serial_port',
         default_value='/dev/ttyTHS1',
         description='serial port for the hw interface'
-    ) 
+    )
     
     # robot URDF/Xacro processing
     urdf_path = PathJoinSubstitution([FindPackageShare('otto_description'), "robot", 'otto.urdf.xacro'])
@@ -147,38 +146,20 @@ def generate_launch_description():
         condition=IfCondition(launch_sensors)
     )
 
-    # lidar bringup 
-    right_lidar = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
-        ),
-        condition=IfCondition(launch_lidar),
-        launch_arguments={'side':'right'}.items()
-    )
-
-    left_lidar = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
-        ),
-        condition=IfCondition(launch_lidar),
-        launch_arguments={'side':'left'}.items()
-    )
-
-    # laser_scan_merger launch file
-    scan_merger = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(scan_merger_pkg, 'launch', 'start.launch.py')
-        ),
-        launch_arguments={'robotname':'x_drive'}.items(),
-        condition=IfCondition(launch_lidar)
-    )
-
     # camera bringup
     robot_cams = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_dir, 'launch', 'robot_cams.launch.py')
         ),
         condition=IfCondition(launch_cams)
+    )
+
+    # lidar stack bringup
+    lidar_stack = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_dir, 'launch', 'lidar_stack.launch.py')
+        ),
+        condition=IfCondition(launch_lidar)
     )
 
     return LaunchDescription([
@@ -192,8 +173,6 @@ def generate_launch_description():
         joint_state_broadcaster_spawner,
         delay_controller_spawners,
         misc_sensors,
-        right_lidar,
-        left_lidar,
-        scan_merger,
+        lidar_stack,
         robot_cams
     ])
