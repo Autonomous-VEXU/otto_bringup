@@ -24,6 +24,7 @@ install(
 install(PROGRAMS
   src/test_publisher.py
   src/intake.py
+  src/imu_orientation.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
