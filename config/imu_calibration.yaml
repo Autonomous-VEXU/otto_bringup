@@ -3,7 +3,7 @@ apriltag:                 # node name
     # setup (defaults)
     image_transport: raw  # image format: "raw" or "compressed"
     family: 36h11         # tag family name: 16h5, 25h9, 36h11
-    size: 0.223          # default tag edge size in meters
+    size: 0.10            # default tag edge size in meters
     profile: false        # print profiling information to stdout
 
     # tuning of detection (defaults)
@@ -21,9 +21,9 @@ apriltag:                 # node name
     # (optional) list of tags
     # If defined, 'frames' and 'sizes' must have the same length as 'ids'.
     tag:
-      ids:    [0, 11, 22, 33, 44]         # tag IDs for which to publish transform
-      frames: ["robot_tag", "tag_upper", "tag_right", "tag_lower", "tag_left"]   # frame names
-      sizes:  [0.165, 0.223, 0.223, 0.223, 0.223]     # tag-specific edge size, overrides the default 'size'
+      ids:    [3]         # tag IDs for which to publish transform
+      frames: ["ground_truth_rotation"]   # frame names
+      # sizes:  []     # tag-specific edge size, overrides the default 'size'
 
 # BNO055 IMU config
 bno055:
