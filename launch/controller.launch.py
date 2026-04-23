@@ -43,8 +43,9 @@ def generate_launch_description():
         executable='teleop_node',
         name='teleop_twist_joy_node',
         parameters=[config_path, 
-            {'publish_stamped_twist': publish_stamped_twist}, 
-            {'require_enable_button': False}]
+            {'publish_stamped_twist': False}, 
+            {'require_enable_button': False}],
+	remappings=[('/cmd_vel','/commands/velocity')]
     )
 
     return LaunchDescription([

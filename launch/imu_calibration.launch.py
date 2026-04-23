@@ -44,15 +44,6 @@ def generate_launch_description():
        parameters=[sensor_config]
     )
 
-    # IMU driver (Adafruit BNO055)
-    bno055_imu = Node(
-        package="bno055",
-        executable="bno055",
-        parameters=[sensor_config],
-        remappings=[
-            ('/bno055/imu', '/imu')] # remap in order to keep the 'bno055' namespace on other topics
-    )
-
     error_calc = Node(
         package='otto_bringup',
         executable='imu_orientation.py',
@@ -64,6 +55,5 @@ def generate_launch_description():
         camera_node,
         rectify_image,
         apriltag,
-        bno055_imu,
         error_calc
     ])

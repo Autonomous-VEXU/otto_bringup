@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
-from otto_bringup.srv import Intake # type: ignore
+from vex_interfaces.srv import Intake 
 from ros_colorsens_apds9960.msg import ColorProximity
 from std_msgs.msg import Float64MultiArray
 
