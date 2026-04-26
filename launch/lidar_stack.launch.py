@@ -15,7 +15,7 @@ def generate_launch_description():
     pkg_dir = get_package_share_directory('otto_bringup')
     scan_merger_pkg = get_package_share_directory('laser_scan_merger')
 
-    shadow_config = PathJoinSubstitution(pkg_dir, "config", "shadow_filter.yaml")
+    shadow_config = os.path.join(pkg_dir, "config", "shadow_filter.yaml")
 
     # scan merger argument
     merge_scans = LaunchConfiguration('scan_merge')
