@@ -26,7 +26,7 @@ def generate_launch_description():
     launch_color_sensor = LaunchConfiguration('color_sensor')
     launch_color_sensor_cmd = DeclareLaunchArgument(
         'color_sensor',
-        default_value='true',
+        default_value='false',
         description='toggle for launching the color sensor node',
     )
 
@@ -34,17 +34,9 @@ def generate_launch_description():
     launch_fuel_gauge = LaunchConfiguration('fuel_gauge')
     launch_fuel_gauge_cmd = DeclareLaunchArgument(
         'fuel_gauge',
-        default_value='true',
+        default_value='false',
         description='toggle for launching the fuel gauge node',
     )
-    
-    # # IMU driver (Sparkfun LSM6DSV16X)
-    # lsm6_imu = Node(
-    #     package="ros_imu_lsm6dsv16x",
-    #     executable="lsm6dsv16x",
-    #     parameters=[sensor_config],
-    #     condition=IfCondition(launch_imu)
-    # )
 
     # IMU driver (Adafruit BNO055)
     bno055_imu = Node(
@@ -63,13 +55,6 @@ def generate_launch_description():
         parameters=[sensor_config],
         condition=IfCondition(launch_color_sensor)
     )
-
-    # # fuel gauge driver
-    # battery_level = Node(
-    #     package="ros_fuelgauge_max17263",
-    #     executable="max17263_node",
-    #     condition=IfCondition(launch_fuel_gauge)
-    # )
 
     return LaunchDescription([
         launch_imu_cmd,

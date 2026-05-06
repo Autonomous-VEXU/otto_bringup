@@ -26,14 +26,6 @@ def generate_launch_description():
         description='toggle for camera nodes being launched'
     )
 
-    # lidar launch argument
-    launch_lidar = LaunchConfiguration('lidar')
-    launch_lidar_cmd = DeclareLaunchArgument(
-        'lidar',
-        default_value='true',
-        description='toggle for lidar nodes being launched'
-    )
-
     # misc sensors (imu / color sensor / fuel gauge) launch arg
     launch_sensors = LaunchConfiguration('sensors')
     launch_sensors_cmd = DeclareLaunchArgument(
@@ -134,7 +126,8 @@ def generate_launch_description():
             on_exit=[omni_controller_spawner,
                      intake1_controller_spawner, 
                      intake2_controller_spawner, 
-                     intake3_controller_spawner]
+                     intake3_controller_spawner,
+                     ]
         )
     )
 
@@ -154,17 +147,23 @@ def generate_launch_description():
         condition=IfCondition(launch_cams)
     )
 
-    # lidar stack bringup
-    lidar_stack = IncludeLaunchDescription(
+    # lidar bringup 
+    right_lidar = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_dir, 'launch', 'lidar_stack.launch.py')
+            os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
         ),
-        condition=IfCondition(launch_lidar)
+        launch_arguments={'side':'right'}.items()
+    )
+
+    left_lidar = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_dir, 'launch', 'tim7xxS.launch.py')
+        ),
+        launch_arguments={'side':'left'}.items()
     )
 
     return LaunchDescription([
         launch_cams_cmd,
-        launch_lidar_cmd,
         launch_sensors_cmd,
         mock_hw_cmd,
         serial_port_cmd,
@@ -172,7 +171,8 @@ def generate_launch_description():
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delay_controller_spawners,
+        right_lidar,
+        left_lidar,
         misc_sensors,
-        lidar_stack,
         robot_cams
     ])

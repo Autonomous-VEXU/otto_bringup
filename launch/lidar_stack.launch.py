@@ -72,4 +72,4 @@ def generate_launch_description():
         left_lidar,
         scan_merger,
         shadow_filter
-  ])
+    ])
